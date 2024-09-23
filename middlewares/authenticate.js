@@ -21,6 +21,11 @@ export const authenticate = (req, res, next) => {
     const token = match[1];
     verifyJwt(token, secretKey).then(payload => {
         req.currentUserId = payload.sub;
+
+        // Obtain the list of permissions from the "scope" claim.
+        const scope = payload.scope;
+        req.currentUserPermissions = scope ? scope.split(" ") : [];
+
         next(); // Pass the ID of the authenticated user to the next middleware.
     }).catch(() => {
         res.status(401).send("Your token is invalid or has expired");

@@ -40,7 +40,7 @@ router.post("/login", (req, res, next) => {
                 if (!valid) return res.sendStatus(401); // Unauthorized
 
                 const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
-                const payload = { sub: user._id.toString(), exp: exp };
+                const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
 
                 return signJwt(payload, secretKey).then(token => {
                     res.send({ token });
