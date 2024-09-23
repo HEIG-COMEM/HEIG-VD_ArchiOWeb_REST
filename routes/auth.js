@@ -26,7 +26,7 @@ router.post("/signup", (req, res, next) => {
             return newUser.save();
         })
         .then(savedUser => {
-            res.send(savedUser);
+            res.status(201).json(savedUser);
         })
         .catch(next);
 });
@@ -43,7 +43,7 @@ router.post("/login", (req, res, next) => {
                 const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
 
                 return signJwt(payload, secretKey).then(token => {
-                    res.send({ token });
+                    res.json({ token });
                 });
             });
         })
@@ -57,7 +57,7 @@ router.get("/user", authenticate, (req, res, next) => {
         .exec()
         .then(user => {
             if (!user) return res.sendStatus(404); // Not Found
-            res.send(user);
+            res.json(user);
         })
         .catch(next);
 });
