@@ -83,3 +83,6 @@ describe('Authentication', () => {
         });
     });
 });
+
+// Clean up leftover data in the database after testing
+afterAll(cleanUpDatabase);

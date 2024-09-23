@@ -4,6 +4,10 @@ import { asyncHandler } from "../utils/wrapper.js";
 
 const router = express.Router();
 
+router.get("/", (req, res, next) => {
+    res.redirect("/api/v1/user/all");
+});
+
 router.get("/all", asyncHandler(async (req, res, next) => {
     const users = await User.find();
     res.json(users);
