@@ -1,3 +1,3 @@
 {
-	"watch": ["app.js", "bin/start.js", "routes/**/*", "models/**/*"]
+	"watch": ["app.js", "bin/start.js", "routes/**/*", "models/**/*", "openapi.yml"]
 }
