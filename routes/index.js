@@ -14,6 +14,6 @@ router.get("/status", (req, res) => {
 });
 
 router.use("/auth", authRouter);
-router.use("/user", userRouter);
+router.use("/users", userRouter);
 
 export default router;
