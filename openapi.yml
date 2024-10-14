@@ -112,22 +112,12 @@ components:
             password:
                type: string
                format: password
-            role:
-               type: string
-               enum:
-                  - employer
-                  - job_seeker
-               example: employer
-               description: The role, could be employer or job_seeker
-            phone:
-               type: string
-               format: phone
-            created_at:
+            createdAt:
                type: string
                format: date-time
                example: 2020-10-08T12:00:00Z
                description: The date and time the user was created
-            updated_at:
+            updatedAt:
                type: string
                format: date-time
                example: 2020-10-08T12:00:00Z
@@ -137,10 +127,8 @@ components:
             - name
             - email
             - password
-            - role
-            - phone
-            - created_at
-            - updated_at
+            - createdAt
+            - updatedAt
       UserData:
          type: object
          properties:
@@ -155,22 +143,10 @@ components:
             password:
                type: string
                format: password
-            role:
-               type: string
-               enum:
-                  - employer
-                  - job_seeker
-               example: employer
-               description: The role, could be employer or job_seeker
-            phone:
-               type: string
-               format: phone
          required:
             - name
             - email
             - password
-            - role
-            - phone
 
    securitySchemes:
       bearerAuth:

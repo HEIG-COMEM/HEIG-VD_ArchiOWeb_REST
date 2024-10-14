@@ -9,14 +9,14 @@ import { cleanUpDatabase, createRandomUser, createRandomUsers } from './utils.js
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);
 
-const href = `/api/v1/user`;
+const href = `/api/v1/users`;
 
 describe('User', () => {
 
     // Test that all users can be retrieved
     // This test doesn't take into account the order of the users
-    test('GET /all', async () => {
-        const response = await supertest(app).get(`${href}/all`);
+    test('GET /', async () => {
+        const response = await supertest(app).get(`${href}/`);
         expect(response.status).toBe(200);
         expect(response.get('Content-Type')).toContain('application/json');
         expect(response.body).toMatchObject([]);
@@ -25,7 +25,7 @@ describe('User', () => {
         const users = createRandomUsers(userCount);
         await Promise.all(users.map(user => user.save()));
 
-        const response2 = await supertest(app).get(`${href}/all`);
+        const response2 = await supertest(app).get(`${href}/`);
         expect(response2.status).toBe(200);
         expect(response2.get('Content-Type')).toContain('application/json');
 
@@ -35,11 +35,9 @@ describe('User', () => {
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
-            phone: user.phone,
-            role: user.role,
             profilePictureUrl: user.profilePictureUrl,
-            created_at: user.created_at.toISOString(),
-            updated_at: user.updated_at.toISOString(),
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
         }))));
     });
 
@@ -55,11 +53,9 @@ describe('User', () => {
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
-            phone: user.phone,
-            role: user.role,
             profilePictureUrl: user.profilePictureUrl,
-            created_at: user.created_at.toISOString(),
-            updated_at: user.updated_at.toISOString(),
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
         });
     });
 });

@@ -10,10 +10,8 @@ export const createRandomUser = () => {
         name: faker.person.fullName(),
         email: faker.internet.email(),
         password: faker.internet.password(),
-        role: ['employer', 'job_seeker'][Math.floor(Math.random() * 2)],
-        phone: faker.phone.number({ style: 'international' }),
-        created_at: faker.date.past(),
-        updated_at: faker.date.recent(),
+        createdAt: faker.date.past(),
+        updatedAt: faker.date.recent(),
     });
 }
 

@@ -16,8 +16,6 @@ describe('Authentication', () => {
             name: 'Test Employer',
             email: 'testEmployer@gmail.com',
             password: '1234',
-            role: 'employer',
-            phone: '1234567890',
         });
 
         // Check that the status and headers of the response are correct.
@@ -26,14 +24,12 @@ describe('Authentication', () => {
 
         // Check that the response body is the created user.
         expect(response.body).toMatchObject({
+            _id: expect.any(String),
             name: 'Test Employer',
             email: 'testEmployer@gmail.com',
-            phone: '1234567890',
-            role: 'employer',
             profilePictureUrl: expect.any(String),
-            _id: expect.any(String),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
         });
     });
 
@@ -72,14 +68,12 @@ describe('Authentication', () => {
 
         // Check that the response body is the logged in user.
         expect(response.body).toMatchObject({
+            _id: expect.any(String),
             name: 'Test Employer',
             email: 'testEmployer@gmail.com',
-            phone: '1234567890',
-            role: 'employer',
             profilePictureUrl: expect.any(String),
-            _id: expect.any(String),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
         });
     });
 });

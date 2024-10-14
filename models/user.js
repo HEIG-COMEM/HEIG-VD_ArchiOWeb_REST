@@ -22,32 +22,21 @@ const userSchema = new Schema({
             message: props => 'The specified email address is already in use.'
         },
     },
-    phone: {
-        type: String,
-        required: true,
-        validate: {
-            validator: async function (phone) {
-                const user = await this.constructor.findOne({ phone });
-                return !user || this.id === user.id;
-
-            },
-            message: props => 'The specified phone number is already in use.'
-        },
-    },
-    role: {
-        type: String,
-        enum: ['employer', 'job_seeker'],
-        required: true
-    },
     profilePictureUrl: {
         type: String,
         default: 'default.jpg'
     },
-    created_at: {
+    publications: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Publication'
+        }
+    ],
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    updated_at: {
+    updatedAt: {
         type: Date,
         default: Date.now
     }
