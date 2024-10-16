@@ -29,3 +29,8 @@ export const createPublication = asyncHandler(async (req, res, next) => {
 
     res.status(201).json(publication);
 });
+
+export const deletePublication = asyncHandler(async (req, res, next) => {
+    await Publication.findByIdAndDelete(req.params.id);
+    res.status(204).end();
+});

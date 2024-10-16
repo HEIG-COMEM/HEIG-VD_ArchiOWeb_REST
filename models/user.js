@@ -22,6 +22,11 @@ const userSchema = new Schema({
             message: props => 'The specified email address is already in use.'
         },
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
     profilePictureUrl: {
         type: String,
         default: 'default.jpg'

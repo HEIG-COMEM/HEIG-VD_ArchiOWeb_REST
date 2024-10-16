@@ -19,3 +19,21 @@ export const createRandomUser = () => {
 export const createRandomUsers = (count) => {
     return Array.from({ length: count }, createRandomUser);
 }
+
+export const createRandomPublication = () => {
+    return new Publication({
+        frontCamera: {
+            path: faker.image.imageUrl()
+        },
+        backCamera: {
+            path: faker.image.imageUrl()
+        },
+        user: "STATIC-60f3c2b5f3b3a7a8f1b3d1b0",
+        createdAt: faker.date.past(),
+        updatedAt: faker.date.recent(),
+    });
+}
+
+export const createRandomPublications = (count) => {
+    return Array.from({ length: count }, createRandomPublication);
+}

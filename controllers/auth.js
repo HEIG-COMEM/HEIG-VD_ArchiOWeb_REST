@@ -12,8 +12,11 @@ export const signup = asyncHandler(async (req, res, next) => {
     const plainPassword = req.body.password;
     const costFactor = 10;
 
+    req.body.role = undefined; // Prevent users from setting their role during signup and falling back to the default role.
+
     const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
     const newUser = new User(req.body);
+
     newUser.password = hashedPassword;
     const savedUser = await newUser.save();
 
