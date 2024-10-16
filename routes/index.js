@@ -1,6 +1,9 @@
 import express from "express";
 import authRouter from "./auth.js";
 import userRouter from "./user.js";
+import publicationRouter from "./publication.js";
+
+import { authenticate } from "../middlewares/authenticate.js";
 
 const router = express.Router();
 
@@ -15,5 +18,6 @@ router.get("/status", (req, res) => {
 
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
+router.use("/publications", authenticate, publicationRouter);
 
 export default router;
