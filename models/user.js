@@ -26,12 +26,6 @@ const userSchema = new Schema({
         type: String,
         default: 'default.jpg'
     },
-    publications: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Publication'
-        }
-    ],
     createdAt: {
         type: Date,
         default: Date.now

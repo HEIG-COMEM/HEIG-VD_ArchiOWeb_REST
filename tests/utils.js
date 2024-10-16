@@ -1,8 +1,9 @@
 import User from '../models/user';
+import Publication from '../models/publication';
 import { faker } from '@faker-js/faker';
 
 export async function cleanUpDatabase() {
-    await Promise.all([User.deleteMany().exec()]);
+    await Promise.all([User.deleteMany().exec(), Publication.deleteMany().exec()]);
 }
 
 export const createRandomUser = () => {

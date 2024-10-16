@@ -1,3 +1,12 @@
 {
-	"watch": ["app.js", "bin/start.js", "routes/**/*", "models/**/*", "openapi.yml"]
+	"watch": [
+		"bin/start.js",
+		"controllers/**/*",
+		"middlewares/**/*",
+		"models/**/*",
+		"routes/**/*",
+		"tests/**/*",
+		"app.js",
+		"openapi.yml"
+	]
 }

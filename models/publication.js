@@ -3,28 +3,12 @@ const Schema = mongoose.Schema;
 
 const publicationSchema = new Schema({
     frontCamera: {
-        height: {
-            type: Number,
-            required: false
-        },
-        width: {
-            type: Number,
-            required: false
-        },
         path: {
             type: String,
             required: true
         },
     },
     backCamera: {
-        height: {
-            type: Number,
-            required: false
-        },
-        width: {
-            type: Number,
-            required: false
-        },
         path: {
             type: String,
             required: true
