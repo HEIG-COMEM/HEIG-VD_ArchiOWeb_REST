@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { promisify } from "util";
+import { asyncHandler } from "../utils/wrapper.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import * as config from '../config.js';
@@ -7,49 +8,36 @@ import * as config from '../config.js';
 const signJwt = promisify(jwt.sign);
 const secretKey = config.secretKey;
 
-export const signup = (req, res, next) => {
+export const signup = asyncHandler(async (req, res, next) => {
     const plainPassword = req.body.password;
     const costFactor = 10;
 
-    bcrypt.hash(plainPassword, costFactor)
-        .then(hashedPassword => {
-            const newUser = new User(req.body);
-            newUser.password = hashedPassword;
-            return newUser.save();
-        })
-        .then(savedUser => {
-            res.status(201).json(savedUser);
-        })
-        .catch(next);
-}
+    const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
+    const newUser = new User(req.body);
+    newUser.password = hashedPassword;
+    const savedUser = await newUser.save();
 
-export const login = (req, res, next) => {
-    User.findOne({ email: req.body.email })
-        .exec()
-        .then(user => {
-            if (!user) return res.sendStatus(401); // Unauthorized
-            return bcrypt.compare(req.body.password, user.password).then(valid => {
-                if (!valid) return res.sendStatus(401); // Unauthorized
+    res.status(201).json(savedUser);
+});
 
-                const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
-                const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
+export const login = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.sendStatus(401); // Unauthorized
 
-                return signJwt(payload, secretKey).then(token => {
-                    res.json({ token });
-                });
-            });
-        })
-        .catch(next);
-}
+    const valid = await bcrypt.compare(req.body.password, user.password);
+    if (!valid) return res.sendStatus(401); // Unauthorized
 
-export const getUser = (req, res, next) => {
-    const currentUserId = req.currentUserId;
+    const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
+    const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
 
-    User.findById(currentUserId)
-        .exec()
-        .then(user => {
-            if (!user) return res.sendStatus(404); // Not Found
-            res.json(user);
-        })
-        .catch(next);
-}
+    const token = await signJwt(payload, secretKey);
+
+    res.json({ token });
+});
+
+export const getUser = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.currentUserId);
+    if (!user) return res.sendStatus(404); // Not Found
+
+    res.json(user);
+});
