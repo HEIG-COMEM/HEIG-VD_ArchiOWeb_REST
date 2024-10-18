@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-// Define the schema for users
+// Define the schema for friendships
 const friendSchema = new Schema({
     users: [{
         type: Schema.Types.ObjectId,
