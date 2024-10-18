@@ -1,9 +1,18 @@
-import User from '../models/user';
-import Publication from '../models/publication';
+import User from '../../models/user.js';
+import Publication from '../../models/publication.js';
+import Friend from '../../models/friend.js';
+import Comment from '../../models/comment.js';
 import { faker } from '@faker-js/faker';
 
-export async function cleanUpDatabase() {
-    await Promise.all([User.deleteMany().exec(), Publication.deleteMany().exec()]);
+export async function cleanUpDatabase() { 
+    await Promise.all(
+        [
+            User.deleteMany().exec(),
+            Publication.deleteMany().exec(),
+            Friend.deleteMany().exec(),
+            Comment.deleteMany().exec()
+        ]
+    );
 }
 
 export const createRandomUser = () => {

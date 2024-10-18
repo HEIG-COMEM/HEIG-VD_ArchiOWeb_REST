@@ -5,7 +5,7 @@ import app from '../app.js';
 import { baseUrl } from '../config.js';
 import User from '../models/user.js';
 import path from 'path';
-import { cleanUpDatabase, createRandomUser, createRandomUsers } from './utils.js';
+import { cleanUpDatabase, createRandomUser, createRandomUsers } from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);

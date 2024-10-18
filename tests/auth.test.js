@@ -3,7 +3,7 @@ import supertest from 'supertest';
 
 import app from '../app.js';
 import { baseUrl } from '../config.js';
-import { cleanUpDatabase } from './utils.js';
+import { cleanUpDatabase } from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
 beforeAll(cleanUpDatabase);
@@ -11,6 +11,8 @@ beforeAll(cleanUpDatabase);
 const href = `/api/v1/auth`;
 
 describe('Authentication', () => {
+    let token;
+
     test('POST /signup', async () => {
         const response = await supertest(app).post(`${href}/signup`).send({
             name: 'Test User',
@@ -54,16 +56,12 @@ describe('Authentication', () => {
         expect(response.body).toMatchObject({
             token: expect.any(String),
         });
+
+        token = response.body.token;
     });
 
     // Test that the user can access the /user route with a token.
     test('GET /user after login', async () => {
-        const loginResponse = await supertest(app).post(`${href}/login`).send({
-            email: 'testUser@gmail.com',
-            password: '1234'
-        });
-
-        const token = loginResponse.body.token;
         const response = await supertest(app).get(`${href}/user`).set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
