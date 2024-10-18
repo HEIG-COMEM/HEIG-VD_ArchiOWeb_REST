@@ -31,6 +31,10 @@ export const createPublication = asyncHandler(async (req, res, next) => {
 });
 
 export const deletePublication = asyncHandler(async (req, res, next) => {
-    await Publication.findByIdAndDelete(req.params.id);
+    const publication = await Publication.findById(req.params.id);
+    
+    if (!publication) return res.status(404).json({ message: 'Publication not found' })
+    
+    await publication.deleteOne();
     res.status(204).end();
 });
