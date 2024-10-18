@@ -41,6 +41,12 @@ const userSchema = new Schema({
     }
 });
 
+// Middleware to update the updatedAt field
+userSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
 userSchema.set("toJSON", {
     transform: transformJsonUser
 });
