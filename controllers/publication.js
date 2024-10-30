@@ -1,5 +1,5 @@
-import Publication from "../models/publication.js";
-import { asyncHandler } from "../utils/wrapper.js";
+import Publication from '../models/publication.js';
+import { asyncHandler } from '../utils/wrapper.js';
 
 export const getPublications = asyncHandler(async (req, res, next) => {
     const publications = await Publication.find();
@@ -16,11 +16,11 @@ export const createPublication = asyncHandler(async (req, res, next) => {
     const publication = new Publication();
 
     publication.frontCamera = {
-        path: req.files["frontCamera"][0].path
+        path: req.files['frontCamera'][0].path,
     };
 
     publication.backCamera = {
-        path: req.files["backCamera"][0].path
+        path: req.files['backCamera'][0].path,
     };
 
     publication.user = currentUserId;
@@ -32,9 +32,10 @@ export const createPublication = asyncHandler(async (req, res, next) => {
 
 export const deletePublication = asyncHandler(async (req, res, next) => {
     const publication = await Publication.findById(req.params.id);
-    
-    if (!publication) return res.status(404).json({ message: 'Publication not found' })
-    
+
+    if (!publication)
+        return res.status(404).json({ message: 'Publication not found' });
+
     await publication.deleteOne();
     res.status(204).end();
 });

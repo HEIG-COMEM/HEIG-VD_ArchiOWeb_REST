@@ -1,5 +1,5 @@
 import Friend from '../models/friend.js';
-import { asyncHandler } from "../utils/wrapper.js";
+import { asyncHandler } from '../utils/wrapper.js';
 
 export const getFriends = asyncHandler(async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -25,6 +25,8 @@ export const createFriend = asyncHandler(async (req, res) => {
 });
 
 export const deleteFriend = asyncHandler(async (req, res) => {
-    await Friend.deleteOne({ users: { $all: [req.currentUserId, req.params.friendId] } });
+    await Friend.deleteOne({
+        users: { $all: [req.currentUserId, req.params.friendId] },
+    });
     res.status(204).end();
 });

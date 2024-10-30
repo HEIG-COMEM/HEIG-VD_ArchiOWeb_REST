@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import swaggerUi from 'swagger-ui-express';

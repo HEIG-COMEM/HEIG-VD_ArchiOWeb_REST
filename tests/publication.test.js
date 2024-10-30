@@ -5,7 +5,11 @@ import app from '../app.js';
 import { baseUrl } from '../config.js';
 import User from '../models/user.js';
 import path from 'path';
-import { cleanUpDatabase, createRandomUser, createRandomUsers } from './utils/utils.js';
+import {
+    cleanUpDatabase,
+    createRandomUser,
+    createRandomUsers,
+} from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);
@@ -13,7 +17,6 @@ beforeEach(cleanUpDatabase);
 const href = `/api/v1/publications`;
 
 describe('Publication', () => {
-
     // Test that the user cannot access the / route without a token.
     test('GET /', async () => {
         const response = await supertest(app).get(`${href}/`);
@@ -30,15 +33,16 @@ describe('Publication', () => {
 
         const response = await supertest(app).post(`/api/v1/auth/login`).send({
             email: 'testPublication@gmail.com',
-            password: '1234'
+            password: '1234',
         });
 
         const token = response.body.token;
 
-        const response2 = await supertest(app).get(`${href}/`).set('Authorization', `Bearer ${token}`);
+        const response2 = await supertest(app)
+            .get(`${href}/`)
+            .set('Authorization', `Bearer ${token}`);
         expect(response2.status).toBe(200);
     });
-
 
     test('POST /publications', async () => {
         expect(true).toBe(true);

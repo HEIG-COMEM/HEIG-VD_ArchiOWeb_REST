@@ -48,7 +48,7 @@ describe('Authentication', () => {
     test('POST /login', async () => {
         const response = await supertest(app).post(`${href}/login`).send({
             email: 'testUser@gmail.com',
-            password: '1234'
+            password: '1234',
         });
 
         expect(response.status).toBe(200);
@@ -62,7 +62,9 @@ describe('Authentication', () => {
 
     // Test that the user can access the /user route with a token.
     test('GET /user after login', async () => {
-        const response = await supertest(app).get(`${href}/user`).set('Authorization', `Bearer ${token}`);
+        const response = await supertest(app)
+            .get(`${href}/user`)
+            .set('Authorization', `Bearer ${token}`);
 
         expect(response.status).toBe(200);
         expect(response.get('Content-Type')).toContain('application/json');

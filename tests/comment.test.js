@@ -9,7 +9,6 @@ import { cleanUpDatabase } from './utils/utils.js';
 beforeAll(cleanUpDatabase);
 
 describe('Comment', () => {
-
     // Setup a test user and a test publication
     let user;
     let publication;
@@ -17,7 +16,7 @@ describe('Comment', () => {
     let initialComment;
     let reply;
 
-    it("Should create a user and log him in", async () => {
+    it('Should create a user and log him in', async () => {
         const response = await supertest(app).post(`/api/v1/auth/signup`).send({
             name: 'Test User',
             email: 'testuser@gmail.com',
@@ -40,10 +39,18 @@ describe('Comment', () => {
         });
     });
 
-    it("Should create a publication", async () => {
-        const response = await supertest(app).post(`/api/v1/publications`).set('Authorization', `Bearer ${token}`)
-            .attach('frontCamera', path.resolve('tests/utils/img/test-front.jpeg'))
-            .attach('backCamera', path.resolve('tests/utils/img/test-back.jpg'));
+    it('Should create a publication', async () => {
+        const response = await supertest(app)
+            .post(`/api/v1/publications`)
+            .set('Authorization', `Bearer ${token}`)
+            .attach(
+                'frontCamera',
+                path.resolve('tests/utils/img/test-front.jpeg')
+            )
+            .attach(
+                'backCamera',
+                path.resolve('tests/utils/img/test-back.jpg')
+            );
 
         publication = response.body;
 
@@ -60,10 +67,13 @@ describe('Comment', () => {
     });
 
     describe('POST /publications/:id/comments/', () => {
-        it("Should create a comment", async () => {
-            const response = await supertest(app).post(`/api/v1/publications/${publication._id}/comments/`).set('Authorization', `Bearer ${token}`).send({
-                content: 'This is a comment',
-            });
+        it('Should create a comment', async () => {
+            const response = await supertest(app)
+                .post(`/api/v1/publications/${publication._id}/comments/`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    content: 'This is a comment',
+                });
 
             initialComment = response.body;
 
@@ -79,11 +89,14 @@ describe('Comment', () => {
             });
         });
 
-        it("Should create a reply to the comment", async () => {
-            const response = await supertest(app).post(`/api/v1/publications/${publication._id}/comments/`).set('Authorization', `Bearer ${token}`).send({
-                content: 'This is a reply',
-                parentComment: initialComment._id,
-            });
+        it('Should create a reply to the comment', async () => {
+            const response = await supertest(app)
+                .post(`/api/v1/publications/${publication._id}/comments/`)
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    content: 'This is a reply',
+                    parentComment: initialComment._id,
+                });
 
             reply = response.body;
 
@@ -99,22 +112,28 @@ describe('Comment', () => {
                 updatedAt: expect.any(String),
             });
         });
-
     });
 
     describe('DELETE /publications/:id/comments/:commentId', () => {
-        it("Should delete the initial comment", async () => {
-            
+        it('Should delete the initial comment', async () => {
             // Delete the initial comment
             // The response status should be 204
-            const response = await supertest(app).delete(`/api/v1/publications/${publication._id}/comments/${initialComment._id}`).set('Authorization', `Bearer ${token}`);
+            const response = await supertest(app)
+                .delete(
+                    `/api/v1/publications/${publication._id}/comments/${initialComment._id}`
+                )
+                .set('Authorization', `Bearer ${token}`);
             expect(response.status).toBe(204);
         });
 
-        it("Should fail to get the reply to the deleted comment", async () => {
+        it('Should fail to get the reply to the deleted comment', async () => {
             // Check if the comment and its replies are deleted
             // We check that the reply is deleted thus the response status should be 404
-            const response2 = await supertest(app).get(`/api/v1/publications/${publication._id}/comments/${reply._id}`).set('Authorization', `Bearer ${token}`);
+            const response2 = await supertest(app)
+                .get(
+                    `/api/v1/publications/${publication._id}/comments/${reply._id}`
+                )
+                .set('Authorization', `Bearer ${token}`);
             expect(response2.status).toBe(404);
         });
     });

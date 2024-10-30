@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
@@ -19,36 +19,37 @@ const userSchema = new Schema({
                 const user = await this.constructor.findOne({ email });
                 return !user || this.id === user.id;
             },
-            message: props => 'The specified email address is already in use.'
+            message: (props) =>
+                'The specified email address is already in use.',
         },
     },
     role: {
         type: String,
         enum: ['user', 'admin'],
-        default: 'user'
+        default: 'user',
     },
     profilePictureUrl: {
         type: String,
-        default: 'default.jpg'
+        default: 'default.jpg',
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
     updatedAt: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 
 // Middleware to update the updatedAt field
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     next();
 });
 
-userSchema.set("toJSON", {
-    transform: transformJsonUser
+userSchema.set('toJSON', {
+    transform: transformJsonUser,
 });
 
 function transformJsonUser(doc, json, options) {

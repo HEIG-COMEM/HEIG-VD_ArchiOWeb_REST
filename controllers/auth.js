@@ -1,8 +1,8 @@
-import bcrypt from "bcrypt";
-import { promisify } from "util";
-import { asyncHandler } from "../utils/wrapper.js";
-import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import bcrypt from 'bcrypt';
+import { promisify } from 'util';
+import { asyncHandler } from '../utils/wrapper.js';
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
 import * as config from '../config.js';
 
 const signJwt = promisify(jwt.sign);

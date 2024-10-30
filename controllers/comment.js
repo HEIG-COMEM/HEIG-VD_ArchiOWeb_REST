@@ -1,10 +1,12 @@
-import Comment from "../models/Comment.js";
-import { asyncHandler } from "../utils/wrapper.js";
+import Comment from '../models/Comment.js';
+import { asyncHandler } from '../utils/wrapper.js';
 
 export const getComments = asyncHandler(async (req, res, next) => {
     const publicationId = req.params.id;
 
-    const comments = await Comment.find({ publication: publicationId }).populate('user').populate('parentComment');
+    const comments = await Comment.find({ publication: publicationId })
+        .populate('user')
+        .populate('parentComment');
 
     res.json(comments);
 });
