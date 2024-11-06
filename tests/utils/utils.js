@@ -3,6 +3,11 @@ import Publication from '../../models/publication.js';
 import Friend from '../../models/friend.js';
 import Comment from '../../models/comment.js';
 import { faker } from '@faker-js/faker';
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import * as config from '../../config.js';
+
+const secretKey = config.secretKey;
 
 export async function cleanUpDatabase() {
     await Promise.all([
@@ -12,6 +17,17 @@ export async function cleanUpDatabase() {
         Comment.deleteMany().exec(),
     ]);
 }
+
+export const disconnectDatabase = async () => {
+    await mongoose.connection.close();
+};
+
+export const generateValidJwt = async (user) => {
+    const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
+    const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
+
+    return jwt.sign(payload, secretKey);
+};
 
 export const createRandomUser = () => {
     return new User({

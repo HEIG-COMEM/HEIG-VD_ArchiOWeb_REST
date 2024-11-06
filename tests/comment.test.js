@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
 import supertest from 'supertest';
 import path from 'path';
 
 import app from '../app.js';
-import { cleanUpDatabase } from './utils/utils.js';
+import { cleanUpDatabase, disconnectDatabase } from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
 beforeAll(cleanUpDatabase);
@@ -139,4 +138,4 @@ describe('Comment', () => {
     });
 });
 
-afterAll(cleanUpDatabase);
+afterAll(disconnectDatabase);

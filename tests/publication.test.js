@@ -1,15 +1,7 @@
-import mongoose from 'mongoose';
 import supertest from 'supertest';
 
 import app from '../app.js';
-import { baseUrl } from '../config.js';
-import User from '../models/user.js';
-import path from 'path';
-import {
-    cleanUpDatabase,
-    createRandomUser,
-    createRandomUsers,
-} from './utils/utils.js';
+import { cleanUpDatabase, disconnectDatabase } from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);
@@ -50,4 +42,4 @@ describe('Publication', () => {
 });
 
 // Clean up leftover data in the database after testing
-afterAll(cleanUpDatabase);
+afterAll(disconnectDatabase);

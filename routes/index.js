@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
 
 // Special route for /status
 router.get('/status', (req, res) => {
-    res.status(200).send('ok');
+    res.status(200).json({ status: 'OK' });
 });
 
 router.use('/auth', authRouter);
