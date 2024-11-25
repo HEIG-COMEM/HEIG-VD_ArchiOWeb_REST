@@ -19,7 +19,7 @@ export async function cleanUpDatabase() {
 }
 
 export const disconnectDatabase = async () => {
-    await mongoose.connection.close();
+    await mongoose.disconnect();
 };
 
 export const generateValidJwt = async (user) => {
