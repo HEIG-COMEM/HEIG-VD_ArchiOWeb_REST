@@ -59,4 +59,5 @@ function transformJsonUser(doc, json, options) {
 }
 
 // Create the model from the schema and export it
-export default mongoose.model('User', userSchema, 'users');
+const User = mongoose.model('User', userSchema, 'users');
+export default User;

@@ -51,4 +51,5 @@ commentSchema.methods.removeDescendants = async function () {
     await this.model('Comment').deleteMany({ parentComment: this._id });
 };
 
-export default mongoose.model('Comment', commentSchema, 'comments');
+const Comment = mongoose.model('Comment', commentSchema, 'comments');
+export default Comment;

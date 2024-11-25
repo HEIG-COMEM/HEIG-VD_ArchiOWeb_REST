@@ -52,4 +52,9 @@ publicationSchema.methods.removeImages = async function () {
     await fs.unlink(path.join(__dirname, '..', this.backCamera.path));
 };
 
-export default mongoose.model('Publication', publicationSchema, 'publications');
+const Publication = mongoose.model(
+    'Publication',
+    publicationSchema,
+    'publications'
+);
+export default Publication;
