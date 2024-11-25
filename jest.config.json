@@ -10,5 +10,6 @@
         "unrest/**/*.js"
     ],
     "coverageDirectory": "coverage",
-    "coverageReporters": ["clover", "json", "html", "lcov", "text"]
+    "coverageReporters": ["clover", "json", "html", "lcov", "text"],
+    "setupFilesAfterEnv": ["jest-extended/all"]
 }

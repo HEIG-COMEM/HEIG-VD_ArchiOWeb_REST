@@ -2,7 +2,7 @@ import User from '../../models/user.js';
 import Publication from '../../models/publication.js';
 import Friend from '../../models/friend.js';
 import Comment from '../../models/comment.js';
-import { faker } from '@faker-js/faker';
+import { el, faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import * as config from '../../config.js';
@@ -29,13 +29,31 @@ export const generateValidJwt = async (user) => {
     return jwt.sign(payload, secretKey);
 };
 
-export const createRandomUser = () => {
+export const createRandomUser = ({
+    name = null,
+    email = faker.internet.email(),
+    password = faker.internet.password(),
+    role = 'user',
+    createdAt = faker.date.past(),
+    updatedAt = faker.date.recent(),
+} = {}) => {
+    if (!name) {
+        name = faker.internet.userName();
+        if (name.length < 2) {
+            name = 'tiny';
+        } else if (name.length > 29) {
+            name = name.substring(0, 28);
+            name += el.random.alphaNumeric(1);
+        }
+        name = name.replace(/-/g, '_');
+    }
     return new User({
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        createdAt: faker.date.past(),
-        updatedAt: faker.date.recent(),
+        name,
+        email,
+        password,
+        role,
+        createdAt,
+        updatedAt,
     });
 };
 

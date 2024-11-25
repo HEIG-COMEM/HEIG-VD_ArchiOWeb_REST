@@ -20,53 +20,56 @@ export const getUsers = asyncHandler(async (req, res, next) => {
 });
 
 export const getUser = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
-    res.json(user);
+    res.json(req.user);
 });
 
-// TODO : Middleware to ensure the only auth user or admin
 export const updateUser = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
-    user.name = req.body.name;
+    //check if all fields are passed in the request
+    if (!req.body.name || !req.body.password || !req.body.email)
+        return res
+            .status(400)
+            .send(`Fields name, password and email are required`);
+
+    req.user.name = req.body.name;
 
     const plainPassword = req.body.password;
     const costFactor = 10;
 
     const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
 
-    user.password = hashedPassword;
-    user.email = req.body.email;
+    req.user.password = hashedPassword;
+    req.user.email = req.body.email;
 
-    user.profilePictureUrl =
+    req.user.profilePictureUrl =
         req.body.profilePictureUrl ||
         User.schema.path('profilePictureUrl').defaultValue;
 
-    await user.save();
+    await req.user.save();
 
-    res.json(user);
+    res.json(req.user);
 });
 
 export const updateUserData = asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.params.id);
-    user.name = req.body.name || user.name;
+    req.user.name = req.body.name || user.name;
 
     if (req.body.password) {
         const plainPassword = req.body.password;
         const costFactor = 10;
         const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
-        user.password = hashedPassword;
+        req.user.password = hashedPassword;
     }
 
-    user.email = req.body.email || user.email;
-    user.profilePictureUrl =
+    req.user.email = req.body.email || user.email;
+    req.user.profilePictureUrl =
         req.body.profilePictureUrl || user.profilePictureUrl;
 
-    await user.save();
+    await req.user.save();
 
-    res.json(user);
+    res.json(req.user);
 });
 
 export const deleteUser = asyncHandler(async (req, res, next) => {
-    await User.findByIdAndDelete(req.params.id);
+    const result = await User.deleteOne({ _id: req.user._id });
+    if (result.deletedCount === 0) return res.status(500).end();
     res.status(204).end();
 });

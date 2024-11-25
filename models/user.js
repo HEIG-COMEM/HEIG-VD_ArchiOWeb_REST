@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { validate } from 'uuid';
 const Schema = mongoose.Schema;
 
 // Define the schema for users
@@ -6,6 +7,17 @@ const userSchema = new Schema({
     name: {
         type: String,
         required: true,
+        validate: {
+            validator: function (name) {
+                // Check if the name is valid
+                const nameRegex =
+                    /^[a-zA-Z0-9](?:[a-zA-Z0-9._]*[a-zA-Z0-9]){1,29}$/;
+                return nameRegex.test(name);
+            },
+            message: (props) =>
+                //display name
+                `The name "${props.value}" is not valid. It must be between 2 and 30 characters long and can only contain letters, numbers, dots, and underscores. It cannot start or end with dots or underscores.`,
+        },
     },
     password: {
         type: String,
@@ -16,11 +28,17 @@ const userSchema = new Schema({
         required: true,
         validate: {
             validator: async function (email) {
+                // Check if the email is valid
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    return false;
+                }
+                // Check if the email is already in use by another user
                 const user = await this.constructor.findOne({ email });
                 return !user || this.id === user.id;
             },
             message: (props) =>
-                'The specified email address is already in use.',
+                'The email address is invalid or already in use by another user.',
         },
     },
     role: {
@@ -31,6 +49,14 @@ const userSchema = new Schema({
     profilePictureUrl: {
         type: String,
         default: 'default.jpg',
+        // validate: {
+        //     validator: function (url) {
+        //         // Check if the URL is valid
+        //         const urlRegex = /^(http|https):\/\/[^ "]+$/;
+        //         return urlRegex.test(url);
+        //     },
+        //     message: (props) => 'The URL provided is invalid.',
+        // },
     },
     createdAt: {
         type: Date,
