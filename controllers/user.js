@@ -50,7 +50,7 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 });
 
 export const updateUserData = asyncHandler(async (req, res, next) => {
-    req.user.name = req.body.name || user.name;
+    req.user.name = req.body.name || req.user.name;
 
     if (req.body.password) {
         const plainPassword = req.body.password;
@@ -59,9 +59,9 @@ export const updateUserData = asyncHandler(async (req, res, next) => {
         req.user.password = hashedPassword;
     }
 
-    req.user.email = req.body.email || user.email;
+    req.user.email = req.body.email || req.user.email;
     req.user.profilePictureUrl =
-        req.body.profilePictureUrl || user.profilePictureUrl;
+        req.body.profilePictureUrl || req.user.profilePictureUrl;
 
     await req.user.save();
 

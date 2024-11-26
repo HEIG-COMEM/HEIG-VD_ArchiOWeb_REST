@@ -149,7 +149,7 @@ describe('GET /users/:id', () => {
     });
 
     // Test of the return 400 if the user id is invalid
-    test('should return 400 if the user id is invalid', async () => {
+    test('should return 400 if the user id is invalid (TEST of the middleware "findUserById")', async () => {
         const jwt = await generateValidJwt(user1);
         const invalidId = 'invalidId';
         const response = await supertest(app)
@@ -160,7 +160,7 @@ describe('GET /users/:id', () => {
     });
 
     // Test of the return 404 if the user is not found
-    test('should return 404 if the user is not found', async () => {
+    test('should return 404 if the user is not found (TEST of the middleware "findUserById")', async () => {
         const jwt = await generateValidJwt(user1);
         const falseId = '000000000000000000000000';
         const response = await supertest(app)
@@ -254,7 +254,7 @@ describe('PUT /users', () => {
         );
     });
 
-    // Test to update the user with an invalid email
+    // Test to update the user with an invalid email and name
     test('should return 422 with details if some fields are invalid', async () => {
         const jwt = await generateValidJwt(user);
         const response = await supertest(app)
@@ -276,7 +276,7 @@ describe('PUT /users', () => {
             .put(`${href}/${adminUser._id.toString()}`)
             .set('Authorization', `Bearer ${jwt}`)
             .send({
-                name: 'New Name',
+                name: 'update.name',
                 email: 'email@test.test',
                 password: 'password',
             });
@@ -294,7 +294,7 @@ describe('PUT /users', () => {
             .put(`${href}/${invalidId}`)
             .set('Authorization', `Bearer ${jwt}`)
             .send({
-                name: 'New Name',
+                name: 'update.name',
                 email: 'email@test.test',
                 password: 'password',
             });
@@ -334,120 +334,235 @@ describe('PUT /users', () => {
     });
 });
 
-// describe('PATCH /users', () => {
-//     //before each create 2 users, one as an admin and one as a user
-//     let adminUser;
-//     let user;
-//     beforeEach(async () => {
-//         adminUser = await createRandomUser({ role: 'admin' }).save();
-//         user = await createRandomUser().save();
-//     });
+describe('PATCH /users', () => {
+    //before each create 2 users, one as an admin and one as a user
+    let adminUser;
+    let user;
+    beforeEach(async () => {
+        adminUser = await createRandomUser({ role: 'admin' }).save();
+        user = await createRandomUser().save();
+    });
 
-//     // Test that a user can be updated
-//     test('patch by admin should return 200 and the updated user', async () => {
-//         const adminJwt = await generateValidJwt(adminUser);
-//         const response = await supertest(app)
-//         .patch(`${href}/${user._id.toString()}`)
-//         .set('Authorization', `Bearer ${adminJwt}`)
-//         .send({
-//             name: 'new.name.by.admin',
-//         });
-//         expect(response.status).toBe(200);
-//         expect(response.body).toMatchObject({
-//             __v: expect.any(Number),
-//             _id: user._id.toString(),
-//             name: 'new.name.by.admin',
-//             email: user.email,
-//             profilePictureUrl: user.profilePictureUrl,
-//             role: user.role,
-//             createdAt: user.createdAt.toISOString(),
-//             updatedAt: expect.any(String),
-//         });
-//     });
+    // Test that a user can be updated
+    test('patch by admin should return 200 and the updated user', async () => {
+        const adminJwt = await generateValidJwt(adminUser);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${adminJwt}`)
+            .send({
+                name: 'new.name.by.admin',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: 'new.name.by.admin',
+            email: user.email,
+            profilePictureUrl: user.profilePictureUrl,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
 
-// });
+    // Test that a user can be updated by the user itself
+    test('patch by user on himself should return 200 and the updated user', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                email: 'b@b.al',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: user.name,
+            email: 'b@b.al',
+            profilePictureUrl: user.profilePictureUrl,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
+
+    // Test to update an other user without being an admin
+    test('should return 403 if the user is not the user itself or an admin', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${adminUser._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                name: 'new.name',
+            });
+        expect(response.status).toBe(403);
+        expect(response.text).toBe(
+            'You are not authorized to perform this action.'
+        );
+    });
+
+    // 4 tests to update each field of the user
+    // Test to update the name of the user
+    test('should return 200 and the updated user if the name is updated', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                name: 'new.name',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: 'new.name',
+            email: user.email,
+            profilePictureUrl: user.profilePictureUrl,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
+
+    // Test to update the email of the user
+    test('should return 200 and the updated user if the email is updated', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                email: 'c@c.com',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: user.name,
+            email: 'c@c.com',
+            profilePictureUrl: user.profilePictureUrl,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
+
+    // Test to update the password of the user
+    test('should return 200 and the updated user if the password is updated', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                password: 'newpassword',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+            profilePictureUrl: user.profilePictureUrl,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
+
+    // Test to update the profilePictureUrl of the user
+    test('should return 200 and the updated user if the profilePictureUrl is updated', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                profilePictureUrl: 'http://new.image.jpg',
+            });
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            __v: expect.any(Number),
+            _id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+            profilePictureUrl: 'http://new.image.jpg',
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: expect.any(String),
+        });
+    });
+
+    // Test validation of a field
+    test('should return 422 if the email is invalid', async () => {
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .patch(`${href}/${user._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .send({
+                email: 'invalidemail',
+            });
+        expect(response.status).toBe(422);
+        expect(response.body).toContainKeys(['errors', 'message']);
+    });
+
+    test.todo(
+        'Is there a need to test the fields passed in the request? Like if the user sends a field that is not in the schema?'
+    );
+});
+
+describe('DELETE /users', () => {
+    //before each create 4 users, one as an admin and one as a user
+    let adminUser1;
+    let adminUser2;
+    let user1;
+    let user2;
+    beforeEach(async () => {
+        adminUser1 = await createRandomUser({ role: 'admin' }).save();
+        adminUser2 = await createRandomUser({ role: 'admin' }).save();
+        user1 = await createRandomUser().save();
+        user2 = await createRandomUser().save();
+    });
+
+    // Test that a user can be deleted by an admin
+    test('delete by admin should return 204', async () => {
+        const adminJwt = await generateValidJwt(adminUser1);
+        const response = await supertest(app)
+            .delete(`${href}/${user1._id.toString()}`)
+            .set('Authorization', `Bearer ${adminJwt}`);
+        expect(response.status).toBe(204);
+        expect(response.body).toBeEmpty();
+    });
+
+    // Test that an admin can't delete another admin
+    test('delete an admin by an admin should return 204 and operation should be successful', async () => {
+        const adminJwt = await generateValidJwt(adminUser1);
+        const response = await supertest(app)
+            .delete(`${href}/${adminUser2._id.toString()}`)
+            .set('Authorization', `Bearer ${adminJwt}`);
+        expect(response.status).toBe(204);
+        expect(response.body).toBeEmpty();
+    });
+
+    // Test that a user can be deleted by the user itself
+    test('delete by user should return 204', async () => {
+        const jwt = await generateValidJwt(user1);
+        const response = await supertest(app)
+            .delete(`${href}/${user1._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response.status).toBe(204);
+        expect(response.body).toBeEmpty();
+    });
+
+    // Test that a user can't be deleted by a user that is not the user itself or an admin
+    test('should return 403 if the user is not the user itself or an admin', async () => {
+        const jwt = await generateValidJwt(user1);
+        const response = await supertest(app)
+            .delete(`${href}/${adminUser1._id.toString()}`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response.status).toBe(403);
+        expect(response.text).toBe(
+            'You are not authorized to perform this action.'
+        );
+    });
+});
 
 afterAll(disconnectDatabase);
-
-// Matchers
-// .pass(message)
-// .fail(message)
-// .toBeEmpty()
-// .toBeOneOf([members])
-// .toBeNil()
-// .toSatisfy(predicate)
-// Array
-// .toBeArray()
-// .toBeArrayOfSize()
-// .toIncludeAllMembers([members])
-// .toIncludeAllPartialMembers([members])
-// .toIncludeAnyMembers([members])
-// .toIncludeSameMembers([members])
-// .toPartiallyContain(member)
-// .toSatisfyAll(predicate)
-// .toSatisfyAny(predicate)
-// .toBeInRange(min, max)
-// Boolean
-// .toBeBoolean()
-// .toBeTrue()
-// .toBeFalse()
-// Date
-// .toBeDate()
-// .toBeValidDate()
-// .toBeAfter(date)
-// .toBeBefore(date)
-// .toBeAfterOrEqualTo(date)
-// .toBeBeforeOrEqualTo(date)
-// .toBeBetween(startDate, endDate)
-// Function
-// .toBeFunction()
-// .toThrowWithMessage()
-// Mock
-// .toHaveBeenCalledBefore()
-// .toHaveBeenCalledAfter()
-// .toHaveBeenCalledOnce()
-// .toHaveBeenCalledExactlyOnceWith()
-// Number
-// .toBeNumber()
-// .toBeNaN()
-// .toBeFinite()
-// .toBePositive()
-// .toBeNegative()
-// .toBeEven()
-// .toBeOdd()
-// .toBeWithin(start, end)
-// .toBeInteger()
-// Object
-// .toBeObject()
-// .toBeEmptyObject()
-// .toContainKey(key)
-// .toContainKeys([keys])
-// .toContainAllKeys([keys])
-// .toContainAnyKeys([keys])
-// .toContainValue(value)
-// .toContainValues([values])
-// .toContainAllValues([values])
-// .toContainAnyValues([values])
-// .toContainEntry([key, value])
-// .toContainEntries([[key, value]])
-// .toContainAllEntries([[key, value]])
-// .toContainAnyEntries([[key, value]])
-// .toBeExtensible()
-// .toBeFrozen()
-// .toBeSealed()
-// Promise
-// .toResolve()
-// .toReject()
-// String
-// .toBeString()
-// .toBeHexadecimal(string)
-// .toBeDateString(string)
-// .toEqualCaseInsensitive(string)
-// .toStartWith(prefix)
-// .toEndWith(suffix)
-// .toInclude(substring)
-// .toIncludeRepeated(substring, times)
-// .toIncludeMultiple([substring])
-// .toEqualIgnoringWhitespace(string)
-// Symbol
-// .toBeSymbol()
