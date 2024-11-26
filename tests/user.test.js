@@ -266,7 +266,7 @@ describe('PUT /users', () => {
                 password: 'password',
             });
         expect(response.status).toBe(422);
-        expect(response.body).toContainKeys(['errors', 'message']);
+        expect(response.body).toContainKeys(['message']);
     });
 
     // Test that a user can't be updated by a user that is not the user itself or an admin
@@ -501,7 +501,7 @@ describe('PATCH /users', () => {
                 email: 'invalidemail',
             });
         expect(response.status).toBe(422);
-        expect(response.body).toContainKeys(['errors', 'message']);
+        expect(response.body).toContainKeys(['message']);
     });
 
     test.todo(

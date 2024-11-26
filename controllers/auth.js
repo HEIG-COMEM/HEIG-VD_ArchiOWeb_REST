@@ -4,30 +4,43 @@ import { asyncHandler } from '../utils/wrapper.js';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import * as config from '../config.js';
+import { tr } from '@faker-js/faker';
 
 const signJwt = promisify(jwt.sign);
 const secretKey = config.secretKey;
 
 export const signup = asyncHandler(async (req, res, next) => {
-    const plainPassword = req.body.password;
-    const costFactor = 10;
+    // Prevent users from setting their role during signup and falling back to the default role.
+    req.body.role = undefined;
 
-    req.body.role = undefined; // Prevent users from setting their role during signup and falling back to the default role.
+    if (!req.body.name || !req.body.email || !req.body.password) {
+        return res
+            .status(400)
+            .send('Fields name, email, and password are required');
+    }
 
-    const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
+    // Create a new user and save it to the database
+    req.body.password = await User.hashPassword(req.body.password);
     const newUser = new User(req.body);
+    try {
+        await newUser.save();
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(422).json({ message: error.message });
+        }
+        return next(error);
+    }
 
-    newUser.password = hashedPassword;
-    const savedUser = await newUser.save();
-
-    res.status(201).json(savedUser);
+    res.status(201).json(newUser);
 });
 
 export const login = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.sendStatus(401); // Unauthorized
 
-    const valid = await bcrypt.compare(req.body.password, user.password);
+    if (!req.body.password) return res.sendStatus(401); // Unauthorized
+
+    const valid = await user.comparePassword(req.body.password);
     if (!valid) return res.sendStatus(401); // Unauthorized
 
     const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
