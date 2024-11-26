@@ -563,6 +563,8 @@ describe('DELETE /users', () => {
             'You are not authorized to perform this action.'
         );
     });
+
+    test.todo('Test consistency of the database after deletion');
 });
 
 afterAll(disconnectDatabase);

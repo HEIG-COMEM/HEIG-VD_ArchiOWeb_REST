@@ -1,10 +1,8 @@
-import bcrypt from 'bcrypt';
 import { promisify } from 'util';
 import { asyncHandler } from '../utils/wrapper.js';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import * as config from '../config.js';
-import { tr } from '@faker-js/faker';
 
 const signJwt = promisify(jwt.sign);
 const secretKey = config.secretKey;
