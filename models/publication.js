@@ -32,6 +32,16 @@ const publicationSchema = new Schema({
     },
 });
 
+publicationSchema.set('toJSON', {
+    transform: transformJsonPublication,
+});
+
+function transformJsonPublication(doc, json, options) {
+    // Remove the __v field
+    delete json.__v;
+    return json;
+}
+
 // Middleware to update the updatedAt field
 publicationSchema.pre('save', function (next) {
     this.updatedAt = Date.now();

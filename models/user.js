@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { validate } from 'uuid';
 const Schema = mongoose.Schema;
+import bcrypt from 'bcrypt';
+const COST_FACTOR = 10;
 
 // Define the schema for users
 const userSchema = new Schema({
@@ -70,6 +72,13 @@ const userSchema = new Schema({
 
 // Middleware to update the updatedAt field
 userSchema.pre('save', function (next) {
+    const user = this;
+
+    // Only hash the password if it has been modified (or is new)
+    if (user.isModified('password')) {
+        // Hash the password
+        user.password = User.hashPassword(user.password);
+    }
     this.updatedAt = Date.now();
     next();
 });
@@ -78,9 +87,19 @@ userSchema.set('toJSON', {
     transform: transformJsonUser,
 });
 
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.statics.hashPassword = async function (password) {
+    return await bcrypt.hash(password, COST_FACTOR);
+};
+
 function transformJsonUser(doc, json, options) {
     // Remove the hashed password from the generated JSON.
     delete json.password;
+    // Remove the __v field
+    delete json.__v;
     return json;
 }
 
