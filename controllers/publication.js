@@ -1,4 +1,3 @@
-import { fr, tr } from '@faker-js/faker';
 import Publication from '../models/publication.js';
 import { asyncHandler } from '../utils/wrapper.js';
 
@@ -19,11 +18,12 @@ export const createPublication = asyncHandler(async (req, res, next) => {
     const publication = new Publication();
 
     publication.frontCamera = {
-        path: req.files['frontCamera'][0].path,
+        url: req.images.frontCamera.url,
+        id: req.images.frontCamera.upload_repsonse.public_id,
     };
-
     publication.backCamera = {
-        path: req.files['backCamera'][0].path,
+        url: req.images.backCamera.url,
+        id: req.images.backCamera.upload_repsonse.public_id,
     };
 
     publication.user = req.currentUserId;
