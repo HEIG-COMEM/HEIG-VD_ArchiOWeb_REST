@@ -98,6 +98,8 @@ userSchema.statics.hashPassword = async function (password) {
 function transformJsonUser(doc, json, options) {
     // Remove the hashed password from the generated JSON.
     delete json.password;
+    // Remove the __v field
+    delete json.__v;
     return json;
 }
 
