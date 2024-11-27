@@ -10,6 +10,16 @@ const friendSchema = new Schema({
             required: true,
         },
     ],
+    status: {
+        type: String,
+        enum: ['pending', 'accepted'],
+        default: 'pending',
+    },
+    requester: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -29,7 +39,7 @@ friendSchema.statics.addFriend = async function (userId, friendId) {
     try {
         // Sort the user IDs to ensure uniqueness
         const users = [userId, friendId].sort();
-        await this.create({ users });
+        await this.create({ users, requester: userId, status: 'pending' });
         return this.findOne({ users }).populate('users');
     } catch (error) {
         if (error.name === 'MongoServerError' && error.code === 11000) {
