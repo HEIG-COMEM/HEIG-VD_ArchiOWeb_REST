@@ -39,6 +39,17 @@ friendSchema.statics.addFriend = async function (userId, friendId) {
     }
 };
 
+// Set toJSON transformation
+friendSchema.set('toJSON', {
+    transform: transformJsonFriend,
+});
+
+function transformJsonFriend(doc, json, options) {
+    // Remove the __v field
+    delete json.__v;
+    return json;
+}
+
 const Friend = mongoose.model('Friend', friendSchema, 'friends');
 Friend.syncIndexes(); // Ensure indexes are created
 
