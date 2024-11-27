@@ -494,6 +494,8 @@ paths:
                                 content:
                                     type: string
                                     example: 'This is a comment'
+            security:
+                - bearerAuth: []
             responses:
                 '201':
                     description: Comment created
@@ -543,6 +545,8 @@ paths:
                   schema:
                       type: string
                       description: Identifiant unique du commentaire
+            security:
+                - bearerAuth: []
             responses:
                 '200':
                     description: Comment deleted
