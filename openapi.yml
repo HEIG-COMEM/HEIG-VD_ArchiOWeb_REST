@@ -596,6 +596,28 @@ paths:
           description: Bad request
         "401":
           description: Unauthorized
+  /admin/notifications:
+    post:
+      summary: Send a BeReal notification
+      tags:
+        - Admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Notification sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '422':
+          description: Unprocessable entity
 
 components:
   schemas:
@@ -776,3 +798,22 @@ components:
         message:
           type: string
           example: 'Friend successfully deleted'
+    Notification:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "Time to be real"
+        type:
+          type: string
+          example: "bereal"
+        _id:
+          type: string
+          example: "674838e543fbbe915a8a93dc"
+        sentAt:
+          type: string
+          format: date-time
+          example: "2024-11-28T09:33:25.815Z"
+        oneSignalNotificationId:
+          type: string
+          example: "12345"
