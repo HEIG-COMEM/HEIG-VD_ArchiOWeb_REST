@@ -2,6 +2,7 @@ import User from '../../models/user.js';
 import Publication from '../../models/publication.js';
 import Friend from '../../models/friend.js';
 import Comment from '../../models/comment.js';
+import Notification from '../../models/notification.js';
 import { el, faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
@@ -15,6 +16,7 @@ export async function cleanUpDatabase() {
         Publication.deleteMany().exec(),
         Friend.deleteMany().exec(),
         Comment.deleteMany().exec(),
+        Notification.deleteMany().exec(),
     ]);
 }
 

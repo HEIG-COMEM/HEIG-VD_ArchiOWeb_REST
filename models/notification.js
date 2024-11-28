@@ -63,15 +63,10 @@ notificationSchema.pre('save', async function (next) {
         sentAt: { $gte: today, $lt: tomorrow },
     });
     if (count > 0) {
-        throw new Error(
-            'A notification of this type has already been sent today'
-        );
+        throw new Error('notification already sent today');
     }
 
-    const onesignalNotificationId = await oneSignalNotification(this);
-    console.log(onesignalNotificationId);
-
-    this.oneSignalNotificationId = onesignalNotificationId;
+    this.oneSignalNotificationId = await oneSignalNotification(this);
 
     next();
 });

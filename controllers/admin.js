@@ -6,10 +6,11 @@ export const sendBeRealNotification = asyncHandler(async (req, res) => {
         content: 'Time to be real',
         type: 'bereal',
     });
-    const notif = await notification.save();
-
-    if (!notif) {
-        return res.status(500).json({ message: 'Failed to send notification' });
+    let notif = null;
+    try {
+        notif = await notification.save();
+    } catch (err) {
+        return res.status(400).json({ message: err.message });
     }
 
     res.status(201).json(notif);
