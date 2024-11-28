@@ -71,6 +71,15 @@ notificationSchema.pre('save', async function (next) {
     next();
 });
 
+notificationSchema.set('toJSON', {
+    transform: transformJsonNotification,
+});
+
+function transformJsonNotification(doc, json, options) {
+    delete json.__v;
+    return json;
+}
+
 const Notification = mongoose.model(
     'Notification',
     notificationSchema,
