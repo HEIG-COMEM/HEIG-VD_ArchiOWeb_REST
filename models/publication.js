@@ -1,18 +1,24 @@
 import mongoose from 'mongoose';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { deleteImage } from '../controllers/cdn.js';
 const Schema = mongoose.Schema;
 
 const publicationSchema = new Schema({
     frontCamera: {
-        path: {
+        url: {
+            type: String,
+            required: true,
+        },
+        id: {
             type: String,
             required: true,
         },
     },
     backCamera: {
-        path: {
+        url: {
+            type: String,
+            required: true,
+        },
+        id: {
             type: String,
             required: true,
         },
@@ -50,17 +56,18 @@ publicationSchema.pre('save', function (next) {
 
 // Middleware to remove the images when a publication is deleted
 publicationSchema.pre('deleteOne', { document: true }, async function (next) {
-    await this.removeImages();
-    next();
+    const frontCamera = this.frontCamera;
+    const backCamera = this.backCamera;
+    try {
+        await deleteImage(frontCamera.id);
+        await deleteImage(backCamera.id);
+        this.frontCamera = null;
+        this.backCamera = null;
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
-
-publicationSchema.methods.removeImages = async function () {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    await fs.unlink(path.join(__dirname, '..', this.frontCamera.path));
-    await fs.unlink(path.join(__dirname, '..', this.backCamera.path));
-};
 
 const Publication = mongoose.model(
     'Publication',
