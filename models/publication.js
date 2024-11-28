@@ -56,11 +56,6 @@ publicationSchema.pre('save', function (next) {
 
 // Middleware to remove the images when a publication is deleted
 publicationSchema.pre('deleteOne', { document: true }, async function (next) {
-    await this.removeImages();
-    next();
-});
-
-publicationSchema.methods.removeImages = async function () {
     const frontCamera = this.frontCamera;
     const backCamera = this.backCamera;
     try {
@@ -68,10 +63,11 @@ publicationSchema.methods.removeImages = async function () {
         await deleteImage(backCamera.id);
         this.frontCamera = null;
         this.backCamera = null;
+        next();
     } catch (error) {
-        console.error(error);
+        next(error);
     }
-};
+});
 
 const Publication = mongoose.model(
     'Publication',

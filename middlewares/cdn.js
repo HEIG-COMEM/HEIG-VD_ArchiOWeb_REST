@@ -2,13 +2,17 @@ import { bufferUpload } from '../controllers/cdn.js';
 
 // function to handle image upload
 const uploadImage = async (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'Image is required.' });
+    }
     try {
+        const option = req.cdn.uploadOptions || { resource_type: 'image' };
         const result = await bufferUpload({
-            option: { resource_type: 'image' },
+            option,
             buffer: req.file.buffer,
         });
         req.image = result;
-        next();
+        //next();
     } catch (error) {
         res.status(500).json({ error, message: 'Image upload failed' });
     }
@@ -16,8 +20,11 @@ const uploadImage = async (req, res, next) => {
 
 // function to get mutliple images
 const uploadImages = async (req, res, next) => {
+    if (!req.files) {
+        return res.status(400).json({ message: 'Images are required.' });
+    }
     const uplaodPromises = [];
-    const option = req.cdn.uploadOptions || {};
+    const option = req.cdn.uploadOptions || { resource_type: 'image' };
     for (const key in req.files) {
         uplaodPromises.push(
             bufferUpload({
@@ -45,7 +52,7 @@ const uploadImages = async (req, res, next) => {
                 enumerable: true,
             });
         });
-        next();
+        //next();
     } catch (error) {
         res.status(500).json({ error, message: 'Images upload failed' });
     }
@@ -77,7 +84,41 @@ const uploadPublicationImages = async (req, res, next) => {
         height: 1080,
         quality: 'auto:good',
     };
-    uploadImages(req, res, next);
+    await uploadImages(req, res, next);
+    next();
 };
 
-export { uploadImage, uploadImages, uploadPublicationImages };
+const uploadUserImage = async (req, res, next) => {
+    if (!req.file) {
+        return next();
+    }
+    Object.defineProperty(req, 'cdn', {
+        value: {},
+        writable: true,
+        enumerable: true,
+    });
+    Object.defineProperty(req.cdn, 'uploadOptions', {
+        value: {},
+        writable: true,
+        enumerable: true,
+    });
+    req.cdn.uploadOptions = {
+        resource_type: 'image',
+        asset_folder: 'users',
+        aspect_ratio: '1:1',
+        radius: 'max',
+        crop: 'auto',
+        gravity: 'auto:faces',
+        format: 'webp',
+        height: 200,
+        quality: 'auto:good',
+    };
+    await uploadImage(req, res, next);
+    req.body.profilePicture = {
+        url: req.image.secure_url,
+        id: req.image.public_id,
+    };
+    next();
+};
+
+export { uploadPublicationImages, uploadUserImage };

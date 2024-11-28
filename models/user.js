@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import { validate } from 'uuid';
 const Schema = mongoose.Schema;
 import bcrypt from 'bcrypt';
+import { deleteImage } from '../controllers/cdn.js';
+import { tr } from '@faker-js/faker';
 const COST_FACTOR = 10;
 
 // Define the schema for users
@@ -48,17 +49,16 @@ const userSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user',
     },
-    profilePictureUrl: {
-        type: String,
-        default: 'default.jpg',
-        // validate: {
-        //     validator: function (url) {
-        //         // Check if the URL is valid
-        //         const urlRegex = /^(http|https):\/\/[^ "]+$/;
-        //         return urlRegex.test(url);
-        //     },
-        //     message: (props) => 'The URL provided is invalid.',
-        // },
+    profilePicture: {
+        url: {
+            type: String,
+            default:
+                'https://res.cloudinary.com/dsfssjubh/image/upload/v1732749718/default-profile_picture.webp',
+        },
+        id: {
+            type: String,
+            default: 'default',
+        },
     },
     createdAt: {
         type: Date,
@@ -83,9 +83,25 @@ userSchema.pre('save', function (next) {
     next();
 });
 
+userSchema.pre('deleteOne', { document: true }, async function (next) {
+    try {
+        await deleteImage(this.profilePicture.id);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 userSchema.set('toJSON', {
     transform: transformJsonUser,
 });
+
+userSchema.methods.removeProfilePicture = async function () {
+    await deleteImage(this.profilePicture.id);
+    this.profilePicture.url = User.schema.path('profilePicture.url').default();
+    this.profilePicture.id = User.schema.path('profilePicture.id').default();
+    await this.save();
+};
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);

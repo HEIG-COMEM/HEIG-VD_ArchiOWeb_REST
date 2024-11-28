@@ -1,7 +1,6 @@
-import { tr } from '@faker-js/faker';
 import User from '../models/user.js';
 import { asyncHandler } from '../utils/wrapper.js';
-import bcrypt from 'bcrypt';
+import { deleteImage } from '../controllers/cdn.js';
 
 export const getUsers = asyncHandler(async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -33,18 +32,10 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 
     req.user.name = req.body.name;
 
-    // const plainPassword = req.body.password;
-    // const costFactor = 10;
-
-    // const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
-
-    // req.user.password = hashedPassword;
     req.user.password = req.body.password;
     req.user.email = req.body.email;
 
-    req.user.profilePictureUrl =
-        req.body.profilePictureUrl ||
-        User.schema.path('profilePictureUrl').defaultValue;
+    await editProfilePicture(req, res, next);
 
     try {
         await req.user.save();
@@ -69,9 +60,8 @@ export const updateUserData = asyncHandler(async (req, res, next) => {
     if (req.body.email) {
         req.user.email = req.body.email;
     }
-    if (req.body.profilePictureUrl) {
-        req.user.profilePictureUrl = req.body.profilePictureUrl;
-    }
+
+    await editProfilePicture(req, res, next);
 
     try {
         await req.user.save();
@@ -86,7 +76,28 @@ export const updateUserData = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteUser = asyncHandler(async (req, res, next) => {
-    const result = await User.deleteOne({ _id: req.user._id });
+    const result = await req.user.deleteOne();
     if (result.deletedCount === 0) return res.status(500).end();
     res.status(204).end();
 });
+
+const editProfilePicture = async (req, res, next) => {
+    if (req.body.profilePicture) {
+        if (req.body.profilePicture.url && req.body.profilePicture.id) {
+            await deleteImage(req.user.profilePicture.id);
+            req.user.profilePicture = req.body.profilePicture;
+        } else if (
+            req.body.profilePicture === 'default' &&
+            req.user.profilePicture.url !==
+                User.schema.path('profilePicture.url').default()
+        ) {
+            await deleteImage(req.user.profilePicture.id);
+            req.user.profilePicture.url = User.schema
+                .path('profilePicture.url')
+                .default();
+            req.user.profilePicture.id = User.schema
+                .path('profilePicture.id')
+                .default();
+        }
+    }
+};
