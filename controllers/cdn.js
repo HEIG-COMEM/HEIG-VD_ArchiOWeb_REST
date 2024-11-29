@@ -1,13 +1,11 @@
-// https://dev.to/amnish04/integrating-cloud-storage-for-image-uploads-4164
-import * as dotenv from 'dotenv';
+import * as config from '../config.js';
 import { v2 as cloudinary } from 'cloudinary';
-dotenv.config();
 
 // Cloudinary Configuration
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: config.cloudinaryCloudName,
+    api_key: config.cloudinaryApiKey,
+    api_secret: config.cloudinaryApiSecret,
 });
 
 export const bufferUpload = async ({ option = {}, buffer } = {}) => {

@@ -66,10 +66,12 @@ export const createRandomUsers = (count) => {
 export const createRandomPublication = (user) => {
     return new Publication({
         frontCamera: {
-            path: faker.image.url(),
+            url: faker.image.url(),
+            id: faker.database.mongodbObjectId(),
         },
         backCamera: {
-            path: faker.image.url(),
+            url: faker.image.url(),
+            id: faker.database.mongodbObjectId(),
         },
         user: user._id,
         createdAt: faker.date.past(),

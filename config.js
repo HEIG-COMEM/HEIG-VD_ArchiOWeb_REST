@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-import { v2 as cloudinary } from 'cloudinary';
 dotenv.config();
 
 export const port = process.env.PORT || 3000;
@@ -8,6 +7,9 @@ export const secretKey = process.env.SECRET_KEY;
 export const baseUrl = process.env.BASE_URL;
 export const onesignalAppId = process.env.ONESIGNAL_APP_ID;
 export const onesignalRestApiKey = process.env.ONESIGNAL_REST_API_KEY;
+export const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+export const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
+export const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
 
 if (!secretKey) {
     console.error('Please set the SECRET_KEY environment variable');

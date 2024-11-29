@@ -60,6 +60,10 @@ const uploadImages = async (req, res, next) => {
 
 // function to upload publications images
 const uploadPublicationImages = async (req, res, next) => {
+    if (!req.files) {
+        return res.status(400).json({ message: 'Images are required.' });
+    }
+
     if (!req.files['frontCamera'] || !req.files['backCamera']) {
         return res.status(400).json({ message: 'Images are required.' });
     }
