@@ -1,4 +1,4 @@
-# Seeders
+# Seeders
 
 ## Seeding the Database
 
