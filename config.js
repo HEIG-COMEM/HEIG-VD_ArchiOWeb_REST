@@ -10,6 +10,8 @@ export const onesignalRestApiKey = process.env.ONESIGNAL_REST_API_KEY;
 export const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
 export const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
 export const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
+export const seedAdminEmail = process.env.SEED_ADMIN_EMAIL;
+export const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD;
 
 if (!secretKey) {
     console.error('Please set the SECRET_KEY environment variable');
