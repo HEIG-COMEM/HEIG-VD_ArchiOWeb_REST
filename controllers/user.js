@@ -25,7 +25,12 @@ export const getUser = asyncHandler(async (req, res, next) => {
 
 export const updateUser = asyncHandler(async (req, res, next) => {
     //check if all fields are passed in the request
-    if (!req.body.name || !req.body.password || !req.body.email)
+    if (
+        !req.body.name ||
+        !req.body.password ||
+        !req.body.email ||
+        !req.body.profilePicture
+    )
         return res
             .status(400)
             .send(`Fields name, password and email are required`);
@@ -86,11 +91,13 @@ const editProfilePicture = async (req, res, next) => {
         if (req.body.profilePicture.url && req.body.profilePicture.id) {
             await deleteImage(req.user.profilePicture.id);
             req.user.profilePicture = req.body.profilePicture;
-        } else if (
-            req.body.profilePicture === 'default' &&
-            req.user.profilePicture.url !==
+        } else if (req.body.profilePicture === 'default') {
+            if (
+                req.user.profilePicture.url ===
                 User.schema.path('profilePicture.url').default()
-        ) {
+            )
+                return;
+
             await deleteImage(req.user.profilePicture.id);
             req.user.profilePicture.url = User.schema
                 .path('profilePicture.url')
@@ -98,6 +105,10 @@ const editProfilePicture = async (req, res, next) => {
             req.user.profilePicture.id = User.schema
                 .path('profilePicture.id')
                 .default();
+        } else {
+            return res.status(400).json({
+                message: 'Invalid profile picture',
+            });
         }
     }
 };
