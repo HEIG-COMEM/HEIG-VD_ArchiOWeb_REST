@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import path from 'path';
 
 import app from '../app.js';
 import {
@@ -8,70 +9,17 @@ import {
     disconnectDatabase,
     generateValidJwt,
 } from './utils/utils.js';
-import { de, ro } from '@faker-js/faker';
-import e from 'express';
-import { pass } from 'jest-extended';
 
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);
 
 const href = `/api/v1/users`;
-
-// describe('User', () => {
-//     Test that all users can be retrieved
-//     This test doesn't take into account the order of the users
-//     test('GET /', async () => {
-//         const response = await supertest(app).get(`${href}/`);
-//         expect(response.status).toBe(200);
-//         expect(response.get('Content-Type')).toContain('application/json');
-//         expect(response.body).toMatchObject([]);
-
-//         const userCount = 5;
-//         const users = createRandomUsers(userCount);
-//         await Promise.all(users.map((user) => user.save()));
-
-//         const response2 = await supertest(app).get(`${href}/`);
-//         expect(response2.status).toBe(200);
-//         expect(response2.get('Content-Type')).toContain('application/json');
-
-//         expect(response2.body).toHaveLength(userCount);
-//         compare the response body with the users array (dont take into account the order)
-//         expect(response2.body).toEqual(
-//             expect.arrayContaining(
-//                 users.map((user) =>
-//                     expect.objectContaining({
-//                         _id: user._id.toString(),
-//                         name: user.name,
-//                         email: user.email,
-//                         profilePictureUrl: user.profilePictureUrl,
-//                         createdAt: user.createdAt.toISOString(),
-//                         updatedAt: user.updatedAt.toISOString(),
-//                     })
-//                 )
-//             )
-//         );
-//     });
-
-//     Test that a user can be retrieved by ID
-//     test('GET /:id', async () => {
-//         const user = createRandomUser();
-//         await user.save();
-
-//         const response = await supertest(app).get(
-//             `${href}/${user._id.toString()}`
-//         );
-//         expect(response.status).toBe(200);
-//         expect(response.get('Content-Type')).toContain('application/json');
-//         expect(response.body).toMatchObject({
-//             _id: user._id.toString(),
-//             name: user.name,
-//             email: user.email,
-//             profilePictureUrl: user.profilePictureUrl,
-//             createdAt: user.createdAt.toISOString(),
-//             updatedAt: user.updatedAt.toISOString(),
-//         });
-//     });
-// });
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const profilePicturePath = path.resolve(
+    __dirname,
+    `utils${path.sep}img${path.sep}`,
+    'test-front.jpeg'
+);
 
 describe('GET /users', () => {
     //before each create 2 users
@@ -94,7 +42,10 @@ describe('GET /users', () => {
                 _id: user1._id.toString(),
                 name: user1.name,
                 email: user1.email,
-                profilePictureUrl: user1.profilePictureUrl,
+                profilePicture: {
+                    url: expect.any(String),
+                    id: expect.any(String),
+                },
                 role: user1.role,
                 createdAt: user1.createdAt.toISOString(),
                 updatedAt: user1.updatedAt.toISOString(),
@@ -103,7 +54,10 @@ describe('GET /users', () => {
                 _id: user2._id.toString(),
                 name: user2.name,
                 email: user2.email,
-                profilePictureUrl: user2.profilePictureUrl,
+                profilePicture: {
+                    url: expect.any(String),
+                    id: expect.any(String),
+                },
                 role: user2.role,
                 createdAt: user2.createdAt.toISOString(),
                 updatedAt: user2.updatedAt.toISOString(),
@@ -138,7 +92,10 @@ describe('GET /users/:id', () => {
             _id: user1._id.toString(),
             name: user1.name,
             email: user1.email,
-            profilePictureUrl: user1.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user1.role,
             createdAt: user1.createdAt.toISOString(),
             updatedAt: user1.updatedAt.toISOString(),
@@ -192,18 +149,22 @@ describe('PUT /users', () => {
         const response = await supertest(app)
             .put(`${href}/${user._id.toString()}`)
             .set('Authorization', `Bearer ${adminJwt}`)
-            .send({
-                name: 'new.name.by.admin',
-                email: 'user@by.admin',
-                password: 'adminpassword',
-                profilePictureUrl: 'http://change.by.admin/image.jpg',
+            .field('name', 'new.name.by.admin')
+            .field('email', 'user@by.admin')
+            .field('password', 'adminpassword')
+            .attach('profilePicture', profilePicturePath, {
+                contentType: 'multipart/form-data',
             });
+
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
             _id: user._id.toString(),
             name: 'new.name.by.admin',
             email: 'user@by.admin',
-            profilePictureUrl: 'http://change.by.admin/image.jpg',
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -216,18 +177,22 @@ describe('PUT /users', () => {
         const response = await supertest(app)
             .put(`${href}/${user._id.toString()}`)
             .set('Authorization', `Bearer ${jwt}`)
-            .send({
-                name: 'new.name.by.user',
-                email: 'user@by.user',
-                password: 'userpassword',
-                profilePictureUrl: 'http://change.by.user/image.jpg',
+            .field('name', 'new.name.by.user')
+            .field('email', 'user@by.user')
+            .field('password', 'userpassword')
+            .attach('profilePicture', profilePicturePath, {
+                contentType: 'multipart/form-data',
             });
+
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
             _id: user._id.toString(),
             name: 'new.name.by.user',
             email: 'user@by.user',
-            profilePictureUrl: 'http://change.by.user/image.jpg',
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -259,6 +224,7 @@ describe('PUT /users', () => {
                 name: 'New Name',
                 email: 'invalidemail',
                 password: 'password',
+                profilePicture: 'default',
             });
         expect(response.status).toBe(422);
         expect(response.body).toContainKeys(['message']);
@@ -352,7 +318,10 @@ describe('PATCH /users', () => {
             _id: user._id.toString(),
             name: 'new.name.by.admin',
             email: user.email,
-            profilePictureUrl: user.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -373,7 +342,10 @@ describe('PATCH /users', () => {
             _id: user._id.toString(),
             name: user.name,
             email: 'b@b.al',
-            profilePictureUrl: user.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -410,7 +382,10 @@ describe('PATCH /users', () => {
             _id: user._id.toString(),
             name: 'new.name',
             email: user.email,
-            profilePictureUrl: user.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -431,7 +406,10 @@ describe('PATCH /users', () => {
             _id: user._id.toString(),
             name: user.name,
             email: 'c@c.com',
-            profilePictureUrl: user.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -452,7 +430,10 @@ describe('PATCH /users', () => {
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
-            profilePictureUrl: user.profilePictureUrl,
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -465,15 +446,18 @@ describe('PATCH /users', () => {
         const response = await supertest(app)
             .patch(`${href}/${user._id.toString()}`)
             .set('Authorization', `Bearer ${jwt}`)
-            .send({
-                profilePictureUrl: 'http://new.image.jpg',
+            .attach('profilePicture', profilePicturePath, {
+                contentType: 'multipart/form-data',
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
-            profilePictureUrl: 'http://new.image.jpg',
+            profilePicture: {
+                url: expect.any(String),
+                id: expect.any(String),
+            },
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
@@ -492,10 +476,6 @@ describe('PATCH /users', () => {
         expect(response.status).toBe(422);
         expect(response.body).toContainKeys(['message']);
     });
-
-    test.todo(
-        'Is there a need to test the fields passed in the request? Like if the user sends a field that is not in the schema?'
-    );
 });
 
 describe('DELETE /users', () => {
