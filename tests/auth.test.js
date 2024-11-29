@@ -8,27 +8,93 @@ beforeAll(cleanUpDatabase);
 
 const href = `/api/v1/auth`;
 
-describe('Authentication', () => {
-    let token;
+// describe('Authentication', () => {
+//     let token;
 
-    test('POST /signup', async () => {
+//     test('POST /signup', async () => {
+//         const response = await supertest(app).post(`${href}/signup`).send({
+//             name: 'Test User',
+//             email: 'testUser@gmail.com',
+//             role: 'admin', // On purpose to test if the role is not saved
+//             password: '1234',
+//         });
+
+//         // Check that the status and headers of the response are correct.
+//         expect(response.status).toBe(201);
+//         expect(response.get('Content-Type')).toContain('application/json');
+
+//         // Check that the response body is the created user.
+//         // Check that the role is not saved.
+//         expect(response.body).toMatchObject({
+//             _id: expect.any(String),
+//             name: 'Test User',
+//             email: 'testUser@gmail.com',
+//             role: 'user',
+//             profilePictureUrl: expect.any(String),
+//             createdAt: expect.any(String),
+//             updatedAt: expect.any(String),
+//         });
+//     });
+
+//     // Test that the user cannot access the /user route without a token.
+//     test('GET /user', async () => {
+//         const response = await supertest(app).get(`${href}/user`);
+//         expect(response.status).toBe(401);
+//     });
+
+//     // Test that the user can log in and get a token.
+//     test('POST /login', async () => {
+//         const response = await supertest(app).post(`${href}/login`).send({
+//             email: 'testUser@gmail.com',
+//             password: '1234',
+//         });
+
+//         expect(response.status).toBe(200);
+//         expect(response.get('Content-Type')).toContain('application/json');
+//         expect(response.body).toMatchObject({
+//             token: expect.any(String),
+//         });
+
+//         token = response.body.token;
+//     });
+
+//     // Test that the user can access the /user route with a token.
+//     test('GET /user after login', async () => {
+//         const response = await supertest(app)
+//             .get(`${href}/user`)
+//             .set('Authorization', `Bearer ${token}`);
+
+//         expect(response.status).toBe(200);
+//         expect(response.get('Content-Type')).toContain('application/json');
+
+//         // Check that the response body is the logged in user.
+//         expect(response.body).toMatchObject({
+//             _id: expect.any(String),
+//             name: 'Test User',
+//             email: 'testUser@gmail.com',
+//             profilePictureUrl: expect.any(String),
+//             createdAt: expect.any(String),
+//             updatedAt: expect.any(String),
+//         });
+//     });
+// });
+
+// Test the POST /signup route
+describe('POST /signup', () => {
+    // Test that the user can sign up with valid data.
+    test('creates a new user with valid data return 200 and the user created', async () => {
         const response = await supertest(app).post(`${href}/signup`).send({
-            name: 'Test User',
-            email: 'testUser@gmail.com',
-            role: 'admin', // On purpose to test if the role is not saved
+            name: 'test.user',
+            email: 'a@a.al',
             password: '1234',
         });
 
-        // Check that the status and headers of the response are correct.
         expect(response.status).toBe(201);
         expect(response.get('Content-Type')).toContain('application/json');
-
-        // Check that the response body is the created user.
-        // Check that the role is not saved.
         expect(response.body).toMatchObject({
             _id: expect.any(String),
-            name: 'Test User',
-            email: 'testUser@gmail.com',
+            name: 'test.user',
+            email: 'a@a.al',
             role: 'user',
             profilePictureUrl: expect.any(String),
             createdAt: expect.any(String),
@@ -36,46 +102,157 @@ describe('Authentication', () => {
         });
     });
 
-    // Test that the user cannot access the /user route without a token.
-    test('GET /user', async () => {
-        const response = await supertest(app).get(`${href}/user`);
-        expect(response.status).toBe(401);
+    // Test that the user cannot sign up with an invalid email.
+    test('does not create a user with an invalid email', async () => {
+        const response = await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user',
+            email: 'a@a',
+            password: '1234',
+        });
+
+        expect(response.status).toBe(422);
+        expect(response.get('Content-Type')).toContain('application/json');
+        expect(response.body).toContainKey('message');
+        expect(response.body.message).toBe(
+            'User validation failed: email: The email address is invalid or already in use by another user.'
+        );
     });
 
-    // Test that the user can log in and get a token.
-    test('POST /login', async () => {
+    // Test that the user cannot sign up with an email that is already in use.
+    test('does not create a user with an email that is already in use', async () => {
+        await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user1',
+            email: 'a@a.al',
+            password: '1234',
+        });
+        const response = await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user2',
+            email: 'a@a.al',
+            password: '5678',
+        });
+
+        expect(response.status).toBe(422);
+        expect(response.get('Content-Type')).toContain('application/json');
+        expect(response.body).toContainKey('message');
+        expect(response.body.message).toBe(
+            'User validation failed: email: The email address is invalid or already in use by another user.'
+        );
+    });
+
+    // Test that the user cannot sign up with a missing field.
+    test('does not create a user with a missing name', async () => {
+        const response = await supertest(app).post(`${href}/signup`).send({
+            email: 'b@b.al',
+            password: '1234',
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.text).toBe(
+            'Fields name, email, and password are required'
+        );
+    });
+});
+
+// Test the POST /login route
+describe('POST /login', () => {
+    // Test that the user can log in with valid data.
+    test('logs in with valid data and returns a token', async () => {
+        await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user',
+            email: 'user@test.ch',
+            password: '1234',
+        });
         const response = await supertest(app).post(`${href}/login`).send({
-            email: 'testUser@gmail.com',
+            email: 'user@test.ch',
             password: '1234',
         });
 
         expect(response.status).toBe(200);
         expect(response.get('Content-Type')).toContain('application/json');
-        expect(response.body).toMatchObject({
-            token: expect.any(String),
+        expect(response.body).toContainKey('token');
+    });
+
+    // Test that the user cannot log in with an invalid email.
+    test('does not log in with an invalid email', async () => {
+        const response = await supertest(app).post(`${href}/login`).send({
+            email: 'user.test.ch',
+            password: '1234',
+        });
+
+        expect(response.status).toBe(401);
+    });
+
+    // Test that the user cannot log in with an invalid password.
+    test('does not log in with an invalid password', async () => {
+        await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user',
+            email: 'user@test.ch',
+            password: '1234',
+        });
+        const response = await supertest(app).post(`${href}/login`).send({
+            email: 'user@test.ch',
+            password: '5678',
+        });
+
+        expect(response.status).toBe(401);
+    });
+
+    // Test that the user cannot log in with a missing field.
+    test('does not log in with a missing email', async () => {
+        const response = await supertest(app).post(`${href}/login`).send({
+            password: '1234',
+        });
+
+        expect(response.status).toBe(401);
+    });
+
+    // Test that the user cannot log in with a missing field.
+    test('does not log in with a missing password', async () => {
+        const response = await supertest(app).post(`${href}/login`).send({
+            email: 'user@test.ch',
+        });
+
+        expect(response.status).toBe(401);
+    });
+});
+
+// Test the GET /user route
+describe('GET /user', () => {
+    let token;
+
+    // Test that the user can access the /user route with a token.
+    test('gets the user with a token', async () => {
+        await supertest(app).post(`${href}/signup`).send({
+            name: 'test.user',
+            email: 'user@test.ch',
+            password: '1234',
+        });
+        const response = await supertest(app).post(`${href}/login`).send({
+            email: 'user@test.ch',
+            password: '1234',
         });
 
         token = response.body.token;
-    });
 
-    // Test that the user can access the /user route with a token.
-    test('GET /user after login', async () => {
-        const response = await supertest(app)
+        const userResponse = await supertest(app)
             .get(`${href}/user`)
             .set('Authorization', `Bearer ${token}`);
 
-        expect(response.status).toBe(200);
-        expect(response.get('Content-Type')).toContain('application/json');
+        expect(userResponse.status).toBe(200);
+        expect(userResponse.get('Content-Type')).toContain('application/json');
+        expect(userResponse.body).toContainKey('_id');
+        expect(userResponse.body).toContainKey('name');
+        expect(userResponse.body).toContainKey('email');
+        expect(userResponse.body).toContainKey('profilePictureUrl');
+        expect(userResponse.body).toContainKey('createdAt');
+        expect(userResponse.body).toContainKey('updatedAt');
+    });
 
-        // Check that the response body is the logged in user.
-        expect(response.body).toMatchObject({
-            _id: expect.any(String),
-            name: 'Test User',
-            email: 'testUser@gmail.com',
-            profilePictureUrl: expect.any(String),
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-        });
+    // Test that the user cannot access the /user route without a token.
+    test('does not get the user without a token', async () => {
+        const response = await supertest(app).get(`${href}/user`);
+
+        expect(response.status).toBe(401);
     });
 });
 

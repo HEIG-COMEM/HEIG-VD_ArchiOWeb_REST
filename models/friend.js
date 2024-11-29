@@ -10,6 +10,16 @@ const friendSchema = new Schema({
             required: true,
         },
     ],
+    status: {
+        type: String,
+        enum: ['pending', 'accepted'],
+        default: 'pending',
+    },
+    requester: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -29,7 +39,7 @@ friendSchema.statics.addFriend = async function (userId, friendId) {
     try {
         // Sort the user IDs to ensure uniqueness
         const users = [userId, friendId].sort();
-        await this.create({ users });
+        await this.create({ users, requester: userId, status: 'pending' });
         return this.findOne({ users }).populate('users');
     } catch (error) {
         if (error.name === 'MongoServerError' && error.code === 11000) {
@@ -38,6 +48,17 @@ friendSchema.statics.addFriend = async function (userId, friendId) {
         throw error;
     }
 };
+
+// Set toJSON transformation
+friendSchema.set('toJSON', {
+    transform: transformJsonFriend,
+});
+
+function transformJsonFriend(doc, json, options) {
+    // Remove the __v field
+    delete json.__v;
+    return json;
+}
 
 const Friend = mongoose.model('Friend', friendSchema, 'friends');
 Friend.syncIndexes(); // Ensure indexes are created

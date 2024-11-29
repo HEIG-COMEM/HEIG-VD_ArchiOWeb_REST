@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/wrapper.js';
 export const getFriends = asyncHandler(async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const page = parseInt(req.query.page) || 1;
+    const status = req.query.status;
 
     const count = await Friend.countDocuments();
 
@@ -11,10 +12,32 @@ export const getFriends = asyncHandler(async (req, res) => {
     res.set('Pagination-PageSize', pageSize);
     res.set('Pagination-Total', count);
 
-    const friends = await Friend.find({ users: req.currentUserId })
-        .limit(pageSize)
-        .skip(pageSize * (page - 1))
-        .populate('users');
+    let friends;
+
+    if (!status) {
+        friends = await Friend.find({
+            $or: [
+                { users: req.currentUserId, status: 'accepted' },
+                {
+                    users: req.currentUserId,
+                    status: 'pending',
+                    requester: { $ne: req.currentUserId },
+                },
+            ],
+        })
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('users');
+    } else {
+        // return friendship of the current user with the specified status
+        friends = await Friend.find({
+            users: req.currentUserId,
+            status,
+        })
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('users');
+    }
 
     res.json(friends);
 });
@@ -25,8 +48,36 @@ export const createFriend = asyncHandler(async (req, res) => {
 });
 
 export const deleteFriend = asyncHandler(async (req, res) => {
-    await Friend.deleteOne({
-        users: { $all: [req.currentUserId, req.params.friendId] },
-    });
+    const friendship = await Friend.findById(req.params.friendshipId);
+
+    if (!friendship) {
+        return res.status(404).send('Friend not found.');
+    }
+
+    await friendship.deleteOne();
     res.status(204).end();
+});
+
+export const updateFriendStatus = asyncHandler(async (req, res) => {
+    const friendship = await Friend.findOne({
+        _id: req.params.friendshipId,
+        status: 'pending',
+    });
+
+    if (!friendship) {
+        return res.status(404).send('Friend request not found.');
+    }
+
+    if (req.body.status === 'denied') {
+        await friendship.deleteOne();
+        return res.status(204).end();
+    }
+
+    if (req.body.status === 'accepted') {
+        friendship.status = 'accepted';
+        await friendship.save();
+        return res.status(200).json(friendship);
+    }
+
+    res.status(400).send('Invalid status');
 });

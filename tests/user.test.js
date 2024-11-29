@@ -91,7 +91,6 @@ describe('GET /users', () => {
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject([
             expect.objectContaining({
-                __v: expect.any(Number),
                 _id: user1._id.toString(),
                 name: user1.name,
                 email: user1.email,
@@ -101,7 +100,6 @@ describe('GET /users', () => {
                 updatedAt: user1.updatedAt.toISOString(),
             }),
             expect.objectContaining({
-                __v: expect.any(Number),
                 _id: user2._id.toString(),
                 name: user2.name,
                 email: user2.email,
@@ -137,7 +135,6 @@ describe('GET /users/:id', () => {
             .set('Authorization', `Bearer ${jwt}`);
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user1._id.toString(),
             name: user1.name,
             email: user1.email,
@@ -203,7 +200,6 @@ describe('PUT /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: 'new.name.by.admin',
             email: 'user@by.admin',
@@ -228,7 +224,6 @@ describe('PUT /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: 'new.name.by.user',
             email: 'user@by.user',
@@ -266,7 +261,7 @@ describe('PUT /users', () => {
                 password: 'password',
             });
         expect(response.status).toBe(422);
-        expect(response.body).toContainKeys(['errors', 'message']);
+        expect(response.body).toContainKeys(['message']);
     });
 
     // Test that a user can't be updated by a user that is not the user itself or an admin
@@ -354,7 +349,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: 'new.name.by.admin',
             email: user.email,
@@ -376,7 +370,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: user.name,
             email: 'b@b.al',
@@ -414,7 +407,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: 'new.name',
             email: user.email,
@@ -436,7 +428,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: user.name,
             email: 'c@c.com',
@@ -458,7 +449,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
@@ -480,7 +470,6 @@ describe('PATCH /users', () => {
             });
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject({
-            __v: expect.any(Number),
             _id: user._id.toString(),
             name: user.name,
             email: user.email,
@@ -501,7 +490,7 @@ describe('PATCH /users', () => {
                 email: 'invalidemail',
             });
         expect(response.status).toBe(422);
-        expect(response.body).toContainKeys(['errors', 'message']);
+        expect(response.body).toContainKeys(['message']);
     });
 
     test.todo(
@@ -563,6 +552,8 @@ describe('DELETE /users', () => {
             'You are not authorized to perform this action.'
         );
     });
+
+    test.todo('Test consistency of the database after deletion');
 });
 
 afterAll(disconnectDatabase);

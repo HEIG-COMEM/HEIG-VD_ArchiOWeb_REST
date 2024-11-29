@@ -1,3 +1,4 @@
+import { tr } from '@faker-js/faker';
 import User from '../models/user.js';
 import { asyncHandler } from '../utils/wrapper.js';
 import bcrypt from 'bcrypt';
@@ -32,38 +33,54 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 
     req.user.name = req.body.name;
 
-    const plainPassword = req.body.password;
-    const costFactor = 10;
+    // const plainPassword = req.body.password;
+    // const costFactor = 10;
 
-    const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
+    // const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
 
-    req.user.password = hashedPassword;
+    // req.user.password = hashedPassword;
+    req.user.password = req.body.password;
     req.user.email = req.body.email;
 
     req.user.profilePictureUrl =
         req.body.profilePictureUrl ||
         User.schema.path('profilePictureUrl').defaultValue;
 
-    await req.user.save();
+    try {
+        await req.user.save();
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(422).json({ message: error.message });
+        }
+        return next(error);
+    }
 
     res.json(req.user);
 });
 
 export const updateUserData = asyncHandler(async (req, res, next) => {
-    req.user.name = req.body.name || req.user.name;
-
+    //update user but before make field validation (it's a patch request so not all fields are required)
+    if (req.body.name) {
+        req.user.name = req.body.name;
+    }
     if (req.body.password) {
-        const plainPassword = req.body.password;
-        const costFactor = 10;
-        const hashedPassword = await bcrypt.hash(plainPassword, costFactor);
-        req.user.password = hashedPassword;
+        req.user.password = req.body.password;
+    }
+    if (req.body.email) {
+        req.user.email = req.body.email;
+    }
+    if (req.body.profilePictureUrl) {
+        req.user.profilePictureUrl = req.body.profilePictureUrl;
     }
 
-    req.user.email = req.body.email || req.user.email;
-    req.user.profilePictureUrl =
-        req.body.profilePictureUrl || req.user.profilePictureUrl;
-
-    await req.user.save();
+    try {
+        await req.user.save();
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            return res.status(422).json({ message: error.message });
+        }
+        return next(error);
+    }
 
     res.json(req.user);
 });

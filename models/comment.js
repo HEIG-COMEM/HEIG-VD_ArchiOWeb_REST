@@ -51,5 +51,16 @@ commentSchema.methods.removeDescendants = async function () {
     await this.model('Comment').deleteMany({ parentComment: this._id });
 };
 
+// Set toJSON transformation
+commentSchema.set('toJSON', {
+    transform: transformJsonComment,
+});
+
+function transformJsonComment(doc, json, options) {
+    // Remove the __v field
+    delete json.__v;
+    return json;
+}
+
 const Comment = mongoose.model('Comment', commentSchema, 'comments');
 export default Comment;

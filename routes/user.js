@@ -1,6 +1,6 @@
 import express from 'express';
 import { onlyUserOrAdmin } from '../middlewares/onlyUserOrAdmin.js';
-import { findUserById } from '../middlewares/findUserById.js';
+import { findUserById } from '../middlewares/findById.js';
 
 import {
     getUsers,
