@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import { el, faker } from '@faker-js/faker';
+import * as config from '../config.js';
 
 export const seedUsers = async () => {
     const createRandomUser = ({
@@ -32,8 +33,19 @@ export const seedUsers = async () => {
 
     const users = Array.from({ length: 10 }, () => createRandomUser());
 
+    const admin = createRandomUser({
+        name: 'admin',
+        email: config.seedAdminEmail,
+        password: config.seedAdminPassword,
+        role: 'admin',
+    });
+
+    admin.password = await User.hashPassword(admin.password);
+    await new User(admin).save();
+
     return Promise.all(
         users.map(async (user) => {
+            user.password = await User.hashPassword(user.password);
             await new User(user).save();
         })
     );
