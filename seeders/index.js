@@ -2,24 +2,37 @@ import mongoose from 'mongoose';
 import * as config from '../config.js';
 import { seedUsers } from './UsersTableSeeder.js';
 import { seedPublications } from './PublicationsTableSeeder.js';
-// import { seedFriends } from './FriendsTableSeeder.js';
-// import { seedComments } from './CommentsTableSeeder.js';
+import { seedFriends } from './FriendsTableSeeder.js';
+import { seedComments, seedAnswers } from './CommentsTableSeeder.js';
+
+import User from '../models/user.js';
+import Publication from '../models/publication.js';
+import Friend from '../models/friend.js';
+import Comment from '../models/comment.js';
+
+const cleanUpDatabase = async () => {
+    await Promise.all([
+        User.deleteMany().exec(),
+        Publication.deleteMany().exec(),
+        Friend.deleteMany().exec(),
+        Comment.deleteMany().exec(),
+    ]);
+};
 
 const runSeeders = async () => {
     try {
         console.log('Running seeders...');
         await mongoose.connect(config.mongoUri);
+
+        await cleanUpDatabase();
+
         await seedUsers();
-        console.log('Seed users ran successfully');
         await seedPublications();
-        console.log('Seed publications ran successfully');
-        // await seedFriends();
-        // console.log('Seed friends ran successfully');
-        // await seedComments();
-        // console.log('Seed comments ran successfully');
+        await seedFriends();
+        await seedComments();
+        await seedAnswers();
 
         console.log('All seeders ran successfully');
-
         await mongoose.disconnect();
     } catch (error) {
         console.error('Error running seeders:', error);

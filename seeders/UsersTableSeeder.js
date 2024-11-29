@@ -2,9 +2,6 @@ import User from '../models/user.js';
 import { el, faker } from '@faker-js/faker';
 
 export const seedUsers = async () => {
-    // Clear existing users
-    await User.deleteMany();
-
     const createRandomUser = ({
         name = null,
         email = faker.internet.email(),
