@@ -174,21 +174,99 @@ describe('POST /friends', () => {
     });
 });
 
-describe('PATCH /friends/:friendId', () => {
-    test.todo('test that the user can accept a friend request');
-    test.todo('test that the user can reject a friend request');
-    test.todo(
-        'test that the user cannot accept a friend request from a nonexistent user'
-    );
-    test.todo(
-        'test that the user cannot accept a friend request from a user who has not sent a friend request'
-    );
-    test.todo(
-        'test that the user cannot accept a friend request from a user who is already a friend'
-    );
-    test.todo(
-        'test that the user cannot accept a friend request from themselves'
-    );
+describe('PATCH /friends/:friendshipId', () => {
+    test('test that the user can accept a friend request', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(friend, user);
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'accepted' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.status).toBe('accepted');
+    });
+
+    test('test that the user can reject a friend request', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(friend, user);
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'denied' });
+
+        expect(response.status).toBe(204);
+    });
+
+    test('test that the user cannot accept a friend request that they have sent', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(user, friend);
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'accepted' });
+
+        expect(response.status).toBe(403);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot reject a friend request that they have sent', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(user, friend);
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'denied' });
+
+        expect(response.status).toBe(403);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot accept a friend request that does not exist', async () => {
+        const response = await supertest(app)
+            .patch(`${href}/123456789012`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'accepted' });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot reject a friend request that does not exist', async () => {
+        const response = await supertest(app)
+            .patch(`${href}/123456789012`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'denied' });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot accept a friend request that is already accepted', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(friend, user, 'accepted');
+
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id.toString()}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'accepted' });
+
+        expect(response.status).toBe(404);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot reject a friend request that is already accepted', async () => {
+        const friend = await createRandomUser().save();
+        const friendship = await createFriendship(friend, user, 'accepted');
+
+        const response = await supertest(app)
+            .patch(`${href}/${friendship._id.toString()}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ status: 'denied' });
+
+        expect(response.status).toBe(404);
+        expect(response).toHaveProperty('text');
+    });
 });
 
 describe('DELETE /friends/:friendId', () => {
