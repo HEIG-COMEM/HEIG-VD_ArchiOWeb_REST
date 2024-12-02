@@ -44,9 +44,6 @@ export const getFriends = asyncHandler(async (req, res) => {
 
 export const createFriend = asyncHandler(async (req, res) => {
     try {
-        if (req.currentUserId === req.body.friendId) {
-            return res.status(400).send('You cannot add yourself as a friend');
-        }
         const friend = await Friend.addFriend(
             req.currentUserId,
             req.body.friendId

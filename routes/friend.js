@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { onlyRecipient } from '../middlewares/onlyRecipient.js';
+import { findFriendById } from '../middlewares/findById.js';
 import {
     getFriends,
     createFriend,
@@ -11,7 +12,8 @@ import {
 const router = express.Router();
 
 router.get('/', getFriends);
-router.post('/', createFriend);
+
+router.post('/', findFriendById, createFriend);
 router.delete('/:friendshipId', deleteFriend);
 router.patch('/:friendshipId', onlyRecipient, updateFriendStatus);
 
