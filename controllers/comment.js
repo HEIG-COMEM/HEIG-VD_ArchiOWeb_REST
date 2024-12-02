@@ -2,22 +2,49 @@ import Comment from '../models/comment.js';
 import { asyncHandler } from '../utils/wrapper.js';
 
 export const getComments = asyncHandler(async (req, res, next) => {
-    const publicationId = req.params.id;
-
-    const comments = await Comment.find({ publication: publicationId })
+    const comments = await Comment.find({ publication: req.publication._id })
         .populate('user')
         .populate('parentComment');
 
     res.json(comments);
 });
 
+export const getComment = asyncHandler(async (req, res, next) => {
+    const comment = await Comment.findOne({
+        _id: req.params.commentId,
+        publication: req.publication._id,
+    }).populate('user');
+
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+    res.json(comment);
+});
+
 export const createComment = asyncHandler(async (req, res, next) => {
-    const publicationId = req.params.id;
     const { content, parentComment } = req.body;
+
+    if (!content)
+        return res.status(422).json({ message: 'Content is required' });
+    if (parentComment) {
+        const parentCommentExists = await Comment.findById(parentComment);
+        if (!parentCommentExists)
+            return res
+                .status(404)
+                .json({ message: 'Parent comment not found' });
+        if (
+            parentCommentExists.publication.toString() !==
+            req.publication._id.toString()
+        )
+            return res
+                .status(422)
+                .json({
+                    message: 'Parent comment is not from the same publication',
+                });
+    }
 
     const comment = new Comment({
         user: req.currentUserId,
-        publication: publicationId,
+        publication: req.publication._id,
         content,
         parentComment,
     });
@@ -28,9 +55,15 @@ export const createComment = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteComment = asyncHandler(async (req, res, next) => {
-    const comment = await Comment.findById(req.params.commentId);
+    const comment = await Comment.findOne({
+        _id: req.params.commentId,
+        publication: req.publication._id,
+    });
 
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+    if (comment.user.toString() !== req.currentUserId)
+        return res.status(403).json({ message: 'Forbidden' });
 
     await comment.deleteOne();
     res.status(204).end();

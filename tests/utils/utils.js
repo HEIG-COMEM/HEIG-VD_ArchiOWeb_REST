@@ -82,3 +82,18 @@ export const createRandomPublication = (user) => {
 export const createRandomPublications = (count) => {
     return Array.from({ length: count }, createRandomPublication);
 };
+
+export const createRandomComment = (
+    user,
+    publication,
+    parentComment = null
+) => {
+    return new Comment({
+        content: faker.lorem.sentence(),
+        user: user._id,
+        publication: publication._id,
+        parentComment: parentComment ? parentComment._id : null,
+        createdAt: faker.date.past(),
+        updatedAt: faker.date.recent(),
+    });
+};

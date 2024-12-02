@@ -29,6 +29,6 @@ router.delete(
     deletePublication
 );
 
-router.use('/:id/comments', commentRouter);
+router.use('/:id/comments', findPublicationById, commentRouter);
 
 export default router;

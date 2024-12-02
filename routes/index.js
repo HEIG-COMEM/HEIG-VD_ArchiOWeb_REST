@@ -10,14 +10,10 @@ import { authorize } from '../middlewares/authorize.js';
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    res.send('Ignition!');
-});
+router.get('/', (req, res, next) => res.redirect('/docs'));
 
 // Special route for /status
-router.get('/status', (req, res) => {
-    res.status(200).json({ status: 'OK' });
-});
+router.get('/status', (req, res) => res.status(200).json({ status: 'OK' }));
 
 router.use('/auth', authRouter);
 router.use('/users', authenticate, userRouter);
