@@ -174,4 +174,38 @@ describe('POST /friends', () => {
     });
 });
 
+describe('PATCH /friends/:friendId', () => {
+    test.todo('test that the user can accept a friend request');
+    test.todo('test that the user can reject a friend request');
+    test.todo(
+        'test that the user cannot accept a friend request from a nonexistent user'
+    );
+    test.todo(
+        'test that the user cannot accept a friend request from a user who has not sent a friend request'
+    );
+    test.todo(
+        'test that the user cannot accept a friend request from a user who is already a friend'
+    );
+    test.todo(
+        'test that the user cannot accept a friend request from themselves'
+    );
+});
+
+describe('DELETE /friends/:friendId', () => {
+    test.todo(
+        'test that the user can cancel a friend request that they have sent'
+    );
+    test.todo(
+        'test that the user can remove a friend that they are friends with'
+    );
+    test.todo(
+        'test that the user cannot cancel a friend request that they have not sent'
+    );
+    test.todo(
+        'test that the user cannot remove a friend that they are not friends with'
+    );
+    test.todo('test that the user cannot remove a friend that does not exist');
+    test.todo('test that the user cannot remove a friend that is themselves');
+});
+
 afterAll(disconnectDatabase);
