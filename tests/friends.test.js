@@ -88,4 +88,90 @@ describe('GET /friends', () => {
     });
 });
 
+describe('POST /friends', () => {
+    test('test that the user can send a friend request', async () => {
+        const friend = await createRandomUser().save();
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: friend._id });
+
+        expect(response.status).toBe(201);
+        expect(response.body.users).toHaveLength(2);
+        expect(response.body.status).toBe('pending');
+    });
+
+    test('test that the user cannot send a friend request to themselves', async () => {
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: user._id });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request to an existing friend', async () => {
+        const friend = friends[0];
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: friend._id });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request to a pending friend', async () => {
+        const friend = pendingFriends[0];
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: friend._id });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request to a user who has sent a friend request', async () => {
+        const friend = pendingUsers[0];
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: friend._id });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request to a nonexistent user', async () => {
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: '123456789012' });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request without a friendId', async () => {
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`);
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot send a friend request with an invalid friendId', async () => {
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${userJwt}`)
+            .send({ friendId: 'invalid' });
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+});
+
 afterAll(disconnectDatabase);

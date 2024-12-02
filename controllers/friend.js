@@ -43,8 +43,24 @@ export const getFriends = asyncHandler(async (req, res) => {
 });
 
 export const createFriend = asyncHandler(async (req, res) => {
-    const friend = await Friend.addFriend(req.currentUserId, req.body.friendId);
-    res.status(201).json(friend);
+    try {
+        if (req.currentUserId === req.body.friendId) {
+            return res.status(400).send('You cannot add yourself as a friend');
+        }
+        const friend = await Friend.addFriend(
+            req.currentUserId,
+            req.body.friendId
+        );
+        res.status(201).json(friend);
+    } catch (error) {
+        if (error.message === 'The friendship already exists') {
+            return res.status(400).send('The friendship already exists');
+        }
+        if (error.name === 'ValidationError') {
+            return res.status(400).send(error.message);
+        }
+        res.status(500).send('Server error');
+    }
 });
 
 export const deleteFriend = asyncHandler(async (req, res) => {
