@@ -5,8 +5,9 @@ import { deleteImage } from '../controllers/cdn.js';
 export const getUsers = asyncHandler(async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const page = parseInt(req.query.page) || 1;
+    const search = req.query.search || '';
 
-    const users = await User.find()
+    const users = await User.find({ name: { $regex: search, $options: 'i' } })
         .limit(pageSize)
         .skip(pageSize * (page - 1));
 
