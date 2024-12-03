@@ -97,3 +97,12 @@ export const createRandomComment = (
         updatedAt: faker.date.recent(),
     });
 };
+
+export const createFriendship = async (user, friend, status = null) => {
+    const friendship = await Friend.addFriend(user._id, friend._id);
+    if (status) {
+        friendship.status = status;
+        await friendship.save();
+    }
+    return friendship;
+};
