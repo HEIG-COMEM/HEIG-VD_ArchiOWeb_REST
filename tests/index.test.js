@@ -2,10 +2,10 @@ import supertest from 'supertest';
 import app from '../app.js';
 
 describe('GET /', () => {
-    test('should return 200 and "Ignition!"', async () => {
+    test('should redirects to docs', async () => {
         const response = await supertest(app).get('/api/v1/');
-        expect(response.status).toBe(200);
-        expect(response.text).toBe('Ignition!');
+        expect(response.status).toBe(302);
+        expect(response.header.location).toBe('/docs');
     });
 });
 

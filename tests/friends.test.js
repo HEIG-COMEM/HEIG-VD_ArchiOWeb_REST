@@ -8,7 +8,6 @@ import {
     generateValidJwt,
     createFriendship,
 } from './utils/utils.js';
-import { fr } from '@faker-js/faker';
 
 // Clean up leftover data in the database before starting to test
 beforeEach(cleanUpDatabase);
@@ -269,21 +268,38 @@ describe('PATCH /friends/:friendshipId', () => {
     });
 });
 
-describe('DELETE /friends/:friendId', () => {
-    test.todo(
-        'test that the user can cancel a friend request that they have sent'
-    );
-    test.todo(
-        'test that the user can remove a friend that they are friends with'
-    );
-    test.todo(
-        'test that the user cannot cancel a friend request that they have not sent'
-    );
-    test.todo(
-        'test that the user cannot remove a friend that they are not friends with'
-    );
-    test.todo('test that the user cannot remove a friend that does not exist');
-    test.todo('test that the user cannot remove a friend that is themselves');
+describe('DELETE /friends/:friendshipId', () => {
+    test('test that the user can remove a friendship that they are friends with', async () => {
+        const friendship = friendships.at(1);
+
+        const response = await supertest(app)
+            .delete(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`);
+
+        expect(response.status).toBe(204);
+    });
+
+    test('test that the user cannot remove a friendship that does not exist', async () => {
+        const response = await supertest(app)
+            .delete(`${href}/123456789012`)
+            .set('Authorization', `Bearer ${userJwt}`);
+
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty('text');
+    });
+
+    test('test that the user cannot remove a friendship that they do not belong to', async () => {
+        const u1 = await createRandomUser().save();
+        const u2 = await createRandomUser().save();
+        const friendship = await createFriendship(u1, u2, 'accepted');
+
+        const response = await supertest(app)
+            .delete(`${href}/${friendship._id}`)
+            .set('Authorization', `Bearer ${userJwt}`);
+
+        expect(response.status).toBe(403);
+        expect(response).toHaveProperty('text');
+    });
 });
 
 afterAll(disconnectDatabase);

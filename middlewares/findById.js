@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import Publication from '../models/publication.js';
+import Friend from '../models/friend.js';
 
 export const findUserById = async (req, res, next) => {
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -41,5 +42,24 @@ export const findFriendById = async (req, res, next) => {
         return res.status(404).send(`No friend found with ID ${friend_id}.`);
     }
     req.friend = friend;
+    next();
+};
+
+export const findFriendshipById = async (req, res, next) => {
+    if (!req.params.friendshipId.match(/^[0-9a-fA-F]{24}$/)) {
+        return res
+            .status(400)
+            .send(`ID ${req.params.friendshipId} is not valid.`);
+    }
+    const friendship = await Friend.findById(req.params.friendshipId);
+    if (!friendship) {
+        return res
+            .status(404)
+            .send(`No friendship found with ID ${req.params.friendshipId}.`);
+    }
+    if (!friendship.users.includes(req.currentUserId)) {
+        return res.status(403).send('You are not authorized to access this');
+    }
+    req.friendship = friendship;
     next();
 };
