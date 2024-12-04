@@ -9,7 +9,7 @@ import * as config from '../config.js';
 import app from '../app.js';
 import createDebugger from 'debug';
 import http from 'http';
-import wsServer from './ws.js';
+import wsServer from '../services/websocket/websocketServer.js';
 
 const debug = createDebugger('rest-api:server');
 /**
@@ -39,14 +39,6 @@ server.on('listening', onListening);
 server.on('upgrade', function upgrade(request, socket, head) {
     wsServer.handleUpgrade(request, socket, head, function done(ws) {
         wsServer.emit('connection', ws, request);
-
-        // ws.on('message', function incoming(message) {
-        //     wsServer.clients.forEach((client) => {
-        //         if (client !== wsServer && client.readyState === WebSocket.OPEN) {
-        //             client.send(`${message}`);
-        //         }
-        //     });
-        // });
     });
 });
 
