@@ -34,7 +34,21 @@ wsServer.on('connection', async (ws, req) => {
  * Notifies a list of users with a given message via WebSocket if they are connected.
  *
  * @param {Array<string>} userIds - An array of user IDs to notify.
- * @param {string} message - The message to send to the users.
+ * @param {JSON} message - The message to send.
+ *
+ * @returns {void}
+ *
+ * @example
+ * notifyUsers(['123', '456'], {
+ *      type: 'friendRequestUpdate',
+ *      data: {
+ *          friendshipId: '123',
+ *          status: 'accepted',
+ *          user: {
+ *              _id: '456',
+ *              name: 'John Doe',
+ *      }
+ *  }
  */
 export const notifyUsers = (userIds, message) => {
     wsServer.clients.forEach((client) => {
@@ -42,7 +56,7 @@ export const notifyUsers = (userIds, message) => {
             client.readyState === WebSocket.OPEN &&
             userIds.includes(client.currentUserId)
         ) {
-            client.send(JSON.stringify({ message }));
+            client.send(JSON.stringify(message));
         }
     });
 };
