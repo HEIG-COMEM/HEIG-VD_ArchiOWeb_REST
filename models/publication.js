@@ -2,6 +2,26 @@ import mongoose from 'mongoose';
 import { deleteImage } from '../controllers/cdn.js';
 const Schema = mongoose.Schema;
 
+/**
+ * Schema representing a geographical point.
+ * Note that longitude comes first in a GeoJSON coordinate array, not latitude.
+ *
+ * @typedef {Object} PointSchema
+ * @property {String} type - The type of the geographical object, must be 'Point'.
+ * @property {Number[]} coordinates - The longitude and latitude of the point.
+ */
+const pointSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+    },
+    coordinates: {
+        type: [Number],
+        required: true,
+    },
+});
+
 const publicationSchema = new Schema({
     frontCamera: {
         url: {
@@ -22,6 +42,10 @@ const publicationSchema = new Schema({
             type: String,
             required: true,
         },
+    },
+    location: {
+        type: pointSchema,
+        required: true,
     },
     user: {
         type: Schema.Types.ObjectId,

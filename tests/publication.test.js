@@ -54,6 +54,10 @@ describe('GET /publications/:id', () => {
                 url: expect.any(String),
                 id: expect.any(String),
             }),
+            location: expect.objectContaining({
+                type: 'Point',
+                coordinates: [expect.toBeNumber(), expect.toBeNumber()],
+            }),
             user: expect.stringMatching(user._id.toString()),
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
@@ -82,6 +86,8 @@ describe('POST /publications', () => {
         const response = await supertest(app)
             .post(`${href}`)
             .set('Authorization', `Bearer ${jwt}`)
+            .field('lat', '37.7749')
+            .field('lng', '-122.4194')
             .attach('frontCamera', frontImagePath, {
                 contentType: 'multipart/form-data',
             })
@@ -98,6 +104,10 @@ describe('POST /publications', () => {
             backCamera: expect.objectContaining({
                 url: expect.any(String),
                 id: expect.any(String),
+            }),
+            location: expect.objectContaining({
+                type: 'Point',
+                coordinates: [expect.toBeNumber(), expect.toBeNumber()],
             }),
             user: expect.stringMatching(user._id.toString()),
             createdAt: expect.any(String),
@@ -140,6 +150,20 @@ describe('POST /publications', () => {
         expect(response.status).toBe(400);
     });
 
+    test('test that the user cannot create a new publication without a location', async () => {
+        const response = await supertest(app)
+            .post(`${href}`)
+            .set('Authorization', `Bearer ${jwt}`)
+            .attach('frontCamera', frontImagePath, {
+                contentType: 'multipart/form-data',
+            })
+            .attach('backCamera', backImagePath, {
+                contentType: 'multipart/form-data',
+            });
+
+        expect(response.status).toBe(400);
+    });
+
     test('test that the user cannot create a new publication without a token', async () => {
         const response = await supertest(app).post(`${href}`);
 
@@ -157,6 +181,8 @@ describe('DELETE /publications/:id', () => {
         const response = await supertest(app)
             .post(`${href}`)
             .set('Authorization', `Bearer ${jwt}`)
+            .field('lat', '37.7749')
+            .field('lng', '-122.4194')
             .attach('frontCamera', frontImagePath, {
                 contentType: 'multipart/form-data',
             })

@@ -29,6 +29,15 @@ export const createPublication = asyncHandler(async (req, res, next) => {
         return res.status(400).json({ message: 'Images are required.' });
     }
 
+    if (!req.body.lat || !req.body.lng) {
+        return res.status(400).json({ message: 'Location is required.' });
+    }
+
+    const location = {
+        type: 'Point',
+        coordinates: [parseFloat(req.body.lng), parseFloat(req.body.lat)],
+    };
+
     const publication = new Publication();
 
     publication.frontCamera = {
@@ -39,6 +48,8 @@ export const createPublication = asyncHandler(async (req, res, next) => {
         url: req.images.backCamera.url,
         id: req.images.backCamera.upload_repsonse.public_id,
     };
+
+    publication.location = location;
 
     publication.user = req.currentUserId;
 
