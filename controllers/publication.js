@@ -4,7 +4,19 @@ import { asyncHandler } from '../utils/wrapper.js';
 import { notifyUsers } from '../services/websocket/websocketServer.js';
 
 export const getPublications = asyncHandler(async (req, res, next) => {
-    const publications = await Publication.find();
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const page = parseInt(req.query.page) || 1;
+
+    const publications = await Publication.find()
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
+
+    const count = await Publication.countDocuments();
+
+    res.set('Pagination-Page', page);
+    res.set('Pagination-PageSize', pageSize);
+    res.set('Pagination-Total', count);
+
     res.json(publications);
 });
 
