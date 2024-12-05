@@ -7,8 +7,8 @@
         "dev": "nodemon",
         "start": "node ./bin/start",
         "seed": "node ./seeders/index.js",
-        "test": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --runInBand --detectOpenHandles",
-        "test:watch": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --watch",
+        "test": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --runInBand --detectOpenHandles",
+        "test:watch": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles --watch",
         "prepare": "husky"
     },
     "dependencies": {

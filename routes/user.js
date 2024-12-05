@@ -7,6 +7,7 @@ import * as cdn from '../middlewares/cdn.js';
 import {
     getUsers,
     getUser,
+    getUserStats,
     updateUser,
     updateUserData,
     deleteUser,
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.get('/', getUsers);
 router.get('/:id', findUserById, getUser);
+router.get('/:id/stats', findUserById, getUserStats);
 router.put(
     '/:id',
     findUserById,
