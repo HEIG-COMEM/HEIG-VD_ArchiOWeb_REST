@@ -98,7 +98,6 @@ export const updateFriendStatus = asyncHandler(async (req, res) => {
                 status: 'accepted',
                 user: {
                     _id: req.currentUserId,
-                    name: req.currentUser.name,
                 },
             },
         });

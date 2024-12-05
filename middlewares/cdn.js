@@ -1,4 +1,5 @@
 import { bufferUpload } from '../controllers/cdn.js';
+import * as config from '../config.js';
 
 // function to handle image upload
 const uploadImage = async (req, res, next) => {
@@ -80,7 +81,8 @@ const uploadPublicationImages = async (req, res, next) => {
     });
     req.cdn.uploadOptions = {
         resource_type: 'image',
-        asset_folder: 'publications',
+        asset_folder: `${config.cloudinaryPrefix}publications`,
+        tags: config.cloudinaryTags,
         aspect_ratio: '2:3',
         crop: 'auto',
         gravity: 'auto',
@@ -108,7 +110,8 @@ const uploadUserImage = async (req, res, next) => {
     });
     req.cdn.uploadOptions = {
         resource_type: 'image',
-        asset_folder: 'users',
+        asset_folder: `${config.cloudinaryPrefix}users`,
+        tags: config.cloudinaryTags,
         aspect_ratio: '1:1',
         radius: 'max',
         crop: 'auto',

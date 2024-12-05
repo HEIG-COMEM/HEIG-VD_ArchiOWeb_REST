@@ -7,6 +7,14 @@ import { el, faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import * as config from '../../config.js';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: config.cloudinaryCloudName,
+    api_key: config.cloudinaryApiKey,
+    api_secret: config.cloudinaryApiSecret,
+});
 
 const secretKey = config.secretKey;
 
@@ -22,6 +30,10 @@ export async function cleanUpDatabase() {
 
 export const disconnectDatabase = async () => {
     await mongoose.disconnect();
+};
+
+export const removeImagesFromCDN = async () => {
+    await cloudinary.api.delete_resources_by_tag(`test`);
 };
 
 export const generateValidJwt = async (user) => {

@@ -8,6 +8,7 @@ import {
     createRandomUsers,
     disconnectDatabase,
     generateValidJwt,
+    removeImagesFromCDN,
 } from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
@@ -169,6 +170,8 @@ describe('PUT /users', () => {
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
         });
+
+        await removeImagesFromCDN();
     });
 
     // Test that a user can be updated by the user itself
@@ -197,6 +200,8 @@ describe('PUT /users', () => {
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
         });
+
+        await removeImagesFromCDN();
     });
 
     // Test to updtae the user with missing fields
@@ -462,6 +467,8 @@ describe('PATCH /users', () => {
             createdAt: user.createdAt.toISOString(),
             updatedAt: expect.any(String),
         });
+
+        await removeImagesFromCDN();
     });
 
     // Test validation of a field
