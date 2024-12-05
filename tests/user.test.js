@@ -5,7 +5,9 @@ import app from '../app.js';
 import {
     cleanUpDatabase,
     createRandomUser,
-    createRandomUsers,
+    createRandomPublication,
+    createRandomComment,
+    createFriendship,
     disconnectDatabase,
     generateValidJwt,
     removeImagesFromCDN,
@@ -132,6 +134,92 @@ describe('GET /users/:id', () => {
         );
         expect(response.status).toBe(401);
         expect(response.text).toBe('Authorization header is missing.');
+    });
+});
+
+describe('GET /users/:id/stats', () => {
+    test('should return 200 and the empty user stats', async () => {
+        const user = await createRandomUser().save();
+        const jwt = await generateValidJwt(user);
+        const response = await supertest(app)
+            .get(`${href}/${user._id.toString()}/stats`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            name: user.name,
+            email: user.email,
+            publications: 0,
+            comments: 0,
+            friendships: 0,
+        });
+    });
+
+    test('should return 200 and the user stats', async () => {
+        const user = await createRandomUser().save();
+        const jwt = await generateValidJwt(user);
+
+        // Create 2 publications
+        const u2 = await createRandomUser().save();
+        const p1 = await createRandomPublication(u2).save();
+        const p2 = await createRandomPublication(u2).save();
+
+        // check the stats
+        const response = await supertest(app)
+            .get(`${href}/${u2._id.toString()}/stats`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            name: u2.name,
+            email: u2.email,
+            publications: 2,
+            comments: 0,
+            friendships: 0,
+        });
+
+        const friendship = await createFriendship(user, u2);
+        const response2 = await supertest(app)
+            .get(`${href}/${u2._id.toString()}/stats`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response2.status).toBe(200);
+        expect(response2.body).toMatchObject({
+            name: u2.name,
+            email: u2.email,
+            publications: 2,
+            comments: 0,
+            friendships: 0,
+        });
+
+        friendship.status = 'accepted';
+        await friendship.save();
+
+        const response3 = await supertest(app)
+            .get(`${href}/${u2._id.toString()}/stats`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response3.status).toBe(200);
+        expect(response3.body).toMatchObject({
+            name: u2.name,
+            email: u2.email,
+            publications: 2,
+            comments: 0,
+            friendships: 1,
+        });
+
+        await createRandomComment(u2, p1).save();
+        await createRandomComment(u2, p1).save();
+        await createRandomComment(u2, p2).save();
+        await createRandomComment(u2, p2).save();
+
+        const response4 = await supertest(app)
+            .get(`${href}/${u2._id.toString()}/stats`)
+            .set('Authorization', `Bearer ${jwt}`);
+        expect(response4.status).toBe(200);
+        expect(response4.body).toMatchObject({
+            name: u2.name,
+            email: u2.email,
+            publications: 2,
+            comments: 4,
+            friendships: 1,
+        });
     });
 });
 
