@@ -85,6 +85,13 @@ export const createRandomPublication = (user) => {
             url: faker.image.url(),
             id: faker.database.mongodbObjectId(),
         },
+        location: {
+            type: 'Point',
+            coordinates: [
+                faker.location.longitude(),
+                faker.location.latitude(),
+            ],
+        },
         user: user._id,
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
