@@ -24,6 +24,61 @@ export const getUser = asyncHandler(async (req, res, next) => {
     res.json(req.user);
 });
 
+export const getUserStats = asyncHandler(async (req, res, next) => {
+    const stats = await User.aggregate([
+        {
+            $match: { _id: req.user._id },
+        },
+        {
+            $lookup: {
+                from: 'publications',
+                localField: '_id',
+                foreignField: 'user',
+                as: 'publications',
+            },
+        },
+        {
+            $lookup: {
+                from: 'comments',
+                localField: '_id',
+                foreignField: 'user',
+                as: 'comments',
+            },
+        },
+        {
+            $lookup: {
+                from: 'friends',
+                let: { userId: '$_id' },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $in: ['$$userId', '$users'] },
+                                    { $eq: ['$status', 'accepted'] },
+                                ],
+                            },
+                        },
+                    },
+                ],
+                as: 'friendships',
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                name: 1,
+                email: 1,
+                publications: { $size: '$publications' },
+                comments: { $size: '$comments' },
+                friendships: { $size: '$friendships' },
+            },
+        },
+    ]);
+
+    res.json(stats.at(0));
+});
+
 export const updateUser = asyncHandler(async (req, res, next) => {
     //check if all fields are passed in the request
     if (
