@@ -9,6 +9,7 @@ import * as config from '../config.js';
 import app from '../app.js';
 import createDebugger from 'debug';
 import http from 'http';
+import wsServer from '../services/websocket/websocketServer.js';
 
 const debug = createDebugger('rest-api:server');
 /**
@@ -31,6 +32,15 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+/**
+ * WebSocket server
+ */
+server.on('upgrade', function upgrade(request, socket, head) {
+    wsServer.handleUpgrade(request, socket, head, function done(ws) {
+        wsServer.emit('connection', ws, request);
+    });
+});
 
 /**
  * Normalize a port into a number, string, or false.

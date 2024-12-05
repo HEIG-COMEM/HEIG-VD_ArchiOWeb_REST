@@ -1,5 +1,6 @@
 import Friend from '../models/friend.js';
 import { asyncHandler } from '../utils/wrapper.js';
+import { notifyUsers } from '../services/websocket/websocketServer.js';
 
 export const getFriends = asyncHandler(async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -89,6 +90,19 @@ export const updateFriendStatus = asyncHandler(async (req, res) => {
     if (req.body.status === 'accepted') {
         friendship.status = 'accepted';
         await friendship.save();
+
+        notifyUsers([friendship.requester._id.toString()], {
+            type: 'friendRequestUpdate',
+            data: {
+                friendshipId: friendship._id,
+                status: 'accepted',
+                user: {
+                    _id: req.currentUserId,
+                    name: req.currentUser.name,
+                },
+            },
+        });
+
         return res.status(200).json(friendship);
     }
 

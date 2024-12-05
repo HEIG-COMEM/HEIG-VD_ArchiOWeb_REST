@@ -1,5 +1,6 @@
 import Comment from '../models/comment.js';
 import { asyncHandler } from '../utils/wrapper.js';
+import { notifyUsers } from '../services/websocket/websocketServer.js';
 
 export const getComments = asyncHandler(async (req, res, next) => {
     const comments = await Comment.find({ publication: req.publication._id })
@@ -35,11 +36,9 @@ export const createComment = asyncHandler(async (req, res, next) => {
             parentCommentExists.publication.toString() !==
             req.publication._id.toString()
         )
-            return res
-                .status(422)
-                .json({
-                    message: 'Parent comment is not from the same publication',
-                });
+            return res.status(422).json({
+                message: 'Parent comment is not from the same publication',
+            });
     }
 
     const comment = new Comment({
@@ -50,6 +49,31 @@ export const createComment = asyncHandler(async (req, res, next) => {
     });
 
     await comment.save();
+
+    const publicationCreatorId = req.publication.user._id.toString();
+
+    const parentCommentCreatorId = parentComment
+        ? (await Comment.findById(parentComment)).user.toString()
+        : null;
+
+    const userIds = [
+        ...new Set(
+            [publicationCreatorId, parentCommentCreatorId].filter(
+                (id) => id && id !== req.currentUserId
+            )
+        ),
+    ];
+
+    notifyUsers(userIds, {
+        type: 'commentCreated',
+        data: {
+            publicationId: req.publication._id,
+            commentId: comment._id,
+            user: {
+                _id: req.currentUserId,
+            },
+        },
+    });
 
     res.status(201).json(comment);
 });
