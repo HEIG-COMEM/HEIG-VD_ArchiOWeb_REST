@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+
 import Publication from '../models/publication.js';
 import User from '../models/user.js';
 
@@ -62,6 +64,13 @@ export const seedPublications = async () => {
             user: users.at(i)._id,
             frontCamera: publications.at(i).frontCamera,
             backCamera: publications.at(i).backCamera,
+            location: {
+                type: 'Point',
+                coordinates: [
+                    faker.location.longitude(),
+                    faker.location.latitude(),
+                ],
+            },
         });
 
         await publication.save();
