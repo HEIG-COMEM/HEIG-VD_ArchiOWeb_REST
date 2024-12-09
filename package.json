@@ -9,6 +9,8 @@
         "seed": "node ./seeders/index.js",
         "test": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --runInBand --detectOpenHandles",
         "test:watch": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles --watch",
+        "prettier": "prettier . --check",
+        "prettier:fix": "prettier --write .",
         "prepare": "husky"
     },
     "dependencies": {
