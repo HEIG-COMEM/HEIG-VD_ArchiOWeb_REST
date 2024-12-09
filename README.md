@@ -31,6 +31,15 @@ npm install
 
 Create a `.env` file in the root directory and provide the environment variables shown in the `.env.example` file.
 
+### Cloud services
+
+This project uses the following cloud services:
+
+-   [Cloudinary](https://cloudinary.com/) for storing images.
+-   [OneSignal](https://onesignal.com/) for sending push notifications.
+
+therefore, you need to create accounts on these platforms and provide the necessary credentials in the `.env` file.
+
 ## Running the Application
 
 To start the application in development mode, run:

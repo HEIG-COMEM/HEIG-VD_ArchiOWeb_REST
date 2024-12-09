@@ -11,6 +11,7 @@ const Schema = mongoose.Schema;
  * @property {Number[]} coordinates - The longitude and latitude of the point.
  */
 const pointSchema = new mongoose.Schema({
+    _id: false, // Disable _id field since we don't need it as this is a subdocument
     type: {
         type: String,
         enum: ['Point'],
