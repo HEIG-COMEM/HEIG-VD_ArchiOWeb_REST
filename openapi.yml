@@ -251,6 +251,31 @@ paths:
                     description: User not found
                 '422':
                     description: Unprocessable entity
+    /users/{id}/stats:
+        get:
+            summary: Get user statistics
+            tags:
+              - Users
+            parameters:
+              - in: path
+                name: id
+                required: true
+                schema:
+                    type: string
+                    description: Identifiant unique de l'utilisateur
+            security:
+                - bearerAuth: []
+            responses:
+                '200':
+                    description: User statistics retrieved
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserStats'
+                '400':
+                    description: Bad request
+                '401':
+                    description: Unauthorized
 
     /publications:
         get:
@@ -642,12 +667,12 @@ components:
                     type: string
                     example: 'user'
                 profilePictureUrl:
-                  oneOf:
-                  - type: string
-                    example: 'default'
-                  - type: string
-                    format: binary
-                  description: "Un fichier à envoyer au serveur"
+                    oneOf:
+                        - type: string
+                          example: 'default'
+                        - type: string
+                          format: binary
+                    description: 'Un fichier à envoyer au serveur'
                 createdAt:
                     type: string
                     format: date-time
@@ -697,29 +722,83 @@ components:
                     type: string
                     format: password
                 profilePictureUrl:
-                  oneOf:
-                  - type: string
-                    example: 'default'
-                  - type: string
-                    format: binary
-                  description: "Un fichier à envoyer au serveur"
+                    oneOf:
+                        - type: string
+                          example: 'default'
+                        - type: string
+                          format: binary
+                    description: 'Un fichier à envoyer au serveur'
             required:
                 - name
                 - email
                 - password
                 - profilePictureUrl
+        UserStats:
+            type: object
+            properties:
+              name:
+                type: string
+                example: 'John Doe'
+              email:
+                type: string
+                format: email
+                example: 'john.doe@email.com'
+              publications:
+                type: integer
+                example: 5
+                description: Number of publications
+              friends:
+                type: integer
+                example: 3
+                description: Number of friends
+              comments:
+                type: integer
+                example: 10
+                description: Number of comments
+        Point:
+            type: object
+            properties:
+                type:
+                    type: string
+                    enum: ['Point']
+                    example: 'Point'
+                coordinates:
+                    type: array
+                    items:
+                        type: number
+                    example: [2.3522, 48.8566]
+                    description: Longitude et latitude de la publication
         Publication:
             type: object
             properties:
                 _id:
                     type: string
-                    example: '12345'
-                title:
+                    example: '6756e41017bf26129f0ac112'
+                frontCamera:
+                    type: object
+                    properties:
+                        url:
+                            type: string
+                            format: uri
+                            example: 'https://example.com/front.jpg'
+                        id:
+                            type: string
+                            example: 'frontCameraId'
+                backCamera:
+                    type: object
+                    properties:
+                        url:
+                            type: string
+                            format: uri
+                            example: 'https://example.com/back.jpg'
+                        id:
+                            type: string
+                            example: 'backCameraId'
+                location:
+                    $ref: '#/components/schemas/Point'
+                user:
                     type: string
-                    example: 'Publication Title'
-                content:
-                    type: string
-                    example: 'Content of the publication'
+                    example: '67890'
                 createdAt:
                     type: string
                     format: date-time
@@ -741,18 +820,21 @@ components:
                     format: uri
                     example: 'https://example.com/back.jpg'
                     description: URL of the image taken with the back camera
+                location:
+                    $ref: '#/components/schemas/Point'
             required:
                 - frontCamera
                 - backCamera
+                - location
         Comment:
             type: object
             properties:
                 _id:
                     type: string
-                    example: '67890'
+                    example: '6756e41017bf26129f0ac112'
                 userId:
                     type: string
-                    example: '12345'
+                    example: 'default'
                 publicationId:
                     type: string
                     example: '54321'
@@ -776,7 +858,7 @@ components:
             properties:
                 _id:
                     type: string
-                    example: '12345'
+                    example: '6756e41017bf26129f0ac112'
                 users:
                     type: array
                     items:
@@ -784,7 +866,7 @@ components:
                         properties:
                             _id:
                                 type: string
-                                example: '67890'
+                                example: '6756e41017bf26129f0ac112'
                             name:
                                 type: string
                                 example: 'John Doe'
@@ -793,13 +875,13 @@ components:
                                 format: email
                                 example: 'john.doe@email.com'
                             profilePictureUrl:
-                              oneOf:
-                              - type: string
-                                example: 'default'
-                              - type: string
-                                format: binary
-                              description: "Un fichier à envoyer au serveur"
-                                
+                                oneOf:
+                                    - type: string
+                                      example: 'default'
+                                    - type: string
+                                      format: binary
+                                description: 'Un fichier à envoyer au serveur'
+
                 status:
                     type: string
                     enum: ['pending', 'accepted']
