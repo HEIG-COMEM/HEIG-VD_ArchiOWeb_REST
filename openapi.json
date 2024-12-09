@@ -343,15 +343,8 @@
                     "bearerAuth": []
                 }],
                 "responses": {
-                    "200": {
-                        "description": "User deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "User deleted"
                     },
                     "400": {
                         "description": "Bad request"
@@ -532,15 +525,8 @@
                     "bearerAuth": []
                 }],
                 "responses": {
-                    "200": {
-                        "description": "Publication deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Publication deleted"
                     },
                     "400": {
                         "description": "Bad request"
@@ -670,15 +656,8 @@
                     "bearerAuth": []
                 }],
                 "responses": {
-                    "200": {
-                        "description": "Comment deleted",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Comment deleted"
                     },
                     "400": {
                         "description": "Bad request"
