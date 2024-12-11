@@ -7,6 +7,7 @@
         "dev": "nodemon",
         "start": "node ./bin/start",
         "seed": "node ./seeders/index.js",
+        "swagger-autogen": "node ./bin/swagger.js",
         "test": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --runInBand --detectOpenHandles",
         "test:watch": "cross-env MONGO_URI=mongodb://127.0.0.1/archioweb-test NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles --watch",
         "prettier": "prettier . --check",
@@ -39,7 +40,8 @@
         "lint-staged": "^15.2.10",
         "nodemon": "^3.1.6",
         "prettier": "3.3.3",
-        "supertest": "^7.0.0"
+        "supertest": "^7.0.0",
+        "swagger-autogen": "^2.23.7"
     },
     "overrides": {
         "whatwg-url": "13.0.0"
