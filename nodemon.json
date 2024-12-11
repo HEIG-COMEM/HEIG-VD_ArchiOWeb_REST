@@ -8,6 +8,6 @@
         "services/**/*",
         "tests/**/*",
         "app.js",
-        "openapi.yml"
+        "openapi.json"
     ]
 }
