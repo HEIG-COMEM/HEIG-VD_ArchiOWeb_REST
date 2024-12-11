@@ -10,7 +10,8 @@ export const getPublications = asyncHandler(async (req, res, next) => {
     const publications = await Publication.find()
         .limit(pageSize)
         .skip(pageSize * (page - 1))
-        .populate('user', 'name');
+        .populate('user', 'name')
+        .populate('user', 'profilePicture.url');
 
     const count = await Publication.countDocuments();
 
