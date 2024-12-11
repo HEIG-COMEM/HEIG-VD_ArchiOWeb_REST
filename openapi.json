@@ -5,10 +5,13 @@
         "version": "1.0.0",
         "description": "**A demonstration REST API developed with [Express](https://expressjs.com).**"
     },
-    "servers": [{
-        "url": "http://localhost:3000/api/v1"
-    }],
-    "tags": [{
+    "servers": [
+        {
+            "url": "https://heig-vd-archioweb-rest.onrender.com/api/v1"
+        }
+    ],
+    "tags": [
+        {
             "name": "Auth",
             "description": "Authentication management"
         },
