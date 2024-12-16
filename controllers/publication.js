@@ -7,12 +7,14 @@ export const getPublications = asyncHandler(async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const page = parseInt(req.query.page) || 1;
 
-    const publications = await Publication.find()
-        .limit(pageSize)
-        .skip(pageSize * (page - 1))
-        .populate('user', 'name profilePicture.url');
+    const [publications, count] = await Promise.all([
+        Publication.find()
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('user', 'name profilePicture.url'),
+        Publication.countDocuments(),
+    ]);
 
-    const count = await Publication.countDocuments();
     const totalPages = Math.ceil(count / pageSize);
 
     res.set('Pagination-Page', page);

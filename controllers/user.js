@@ -7,11 +7,13 @@ export const getUsers = asyncHandler(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const search = req.query.search || '';
 
-    const users = await User.find({ name: { $regex: search, $options: 'i' } })
-        .limit(pageSize)
-        .skip(pageSize * (page - 1));
+    const [users, count] = await Promise.all([
+        User.find({ name: { $regex: search, $options: 'i' } })
+            .limit(pageSize)
+            .skip(pageSize * (page - 1)),
+        User.countDocuments({ name: { $regex: search, $options: 'i' } }),
+    ]);
 
-    const count = await User.countDocuments();
     const totalPages = Math.ceil(count / pageSize);
 
     res.set('Pagination-Page', page);

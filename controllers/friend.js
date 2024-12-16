@@ -7,7 +7,40 @@ export const getFriends = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const status = req.query.status;
 
-    const count = await Friend.countDocuments();
+    const query = {
+        users: req.currentUserId,
+    };
+
+    if (status) {
+        query.status = status;
+        if (status === 'pending') {
+            query.requester = { $ne: req.currentUserId };
+        }
+    } else {
+        query.$or = [
+            { status: 'accepted' },
+            { status: 'pending', requester: { $ne: req.currentUserId } },
+        ];
+    }
+
+    const [friends, count] = await Promise.all([
+        Friend.find(query)
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('users'),
+        Friend.countDocuments(query),
+    ]);
+
+    const friendsMap = friends.map((friendship) => {
+        const friend = friendship.users.find(
+            (user) => user._id.toString() !== req.currentUserId
+        );
+        return {
+            ...friendship.toJSON(),
+            friend,
+        };
+    });
+
     const totalPages = Math.ceil(count / pageSize);
 
     res.set('Pagination-Page', page);
@@ -15,34 +48,7 @@ export const getFriends = asyncHandler(async (req, res) => {
     res.set('Pagination-Total-Pages', totalPages);
     res.set('Pagination-Total-Count', count);
 
-    let friends;
-
-    if (!status) {
-        friends = await Friend.find({
-            $or: [
-                { users: req.currentUserId, status: 'accepted' },
-                {
-                    users: req.currentUserId,
-                    status: 'pending',
-                    requester: { $ne: req.currentUserId },
-                },
-            ],
-        })
-            .limit(pageSize)
-            .skip(pageSize * (page - 1))
-            .populate('users');
-    } else {
-        // return friendship of the current user with the specified status
-        friends = await Friend.find({
-            users: req.currentUserId,
-            status,
-        })
-            .limit(pageSize)
-            .skip(pageSize * (page - 1))
-            .populate('users');
-    }
-
-    res.json(friends);
+    res.json(friendsMap);
 });
 
 export const createFriend = asyncHandler(async (req, res) => {
