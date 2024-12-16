@@ -11,8 +11,9 @@ export const getFriends = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(count / pageSize);
 
     res.set('Pagination-Page', page);
-    res.set('Pagination-PageSize', pageSize);
-    res.set('Pagination-Total', totalPages);
+    res.set('Pagination-Page-Size', pageSize);
+    res.set('Pagination-Total-Page', totalPages);
+    res.set('Pagination-Total-Count', count);
 
     let friends;
 
