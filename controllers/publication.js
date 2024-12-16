@@ -14,10 +14,11 @@ export const getPublications = asyncHandler(async (req, res, next) => {
         .populate('user', 'profilePicture.url');
 
     const count = await Publication.countDocuments();
+    const totalPages = Math.ceil(count / pageSize);
 
     res.set('Pagination-Page', page);
     res.set('Pagination-PageSize', pageSize);
-    res.set('Pagination-Total', count);
+    res.set('Pagination-Total', totalPages);
 
     res.json(publications);
 });
