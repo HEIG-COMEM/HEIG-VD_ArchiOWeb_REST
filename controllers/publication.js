@@ -10,8 +10,7 @@ export const getPublications = asyncHandler(async (req, res, next) => {
     const publications = await Publication.find()
         .limit(pageSize)
         .skip(pageSize * (page - 1))
-        .populate('user', 'name')
-        .populate('user', 'profilePicture.url');
+        .populate('user', 'name profilePicture.url');
 
     const count = await Publication.countDocuments();
     const totalPages = Math.ceil(count / pageSize);

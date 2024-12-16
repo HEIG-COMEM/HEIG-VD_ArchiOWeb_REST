@@ -4,8 +4,7 @@ import { notifyUsers } from '../services/websocket/websocketServer.js';
 
 export const getComments = asyncHandler(async (req, res, next) => {
     const comments = await Comment.find({ publication: req.publication._id })
-        .populate('user', 'name')
-        .populate('user', 'profilePicture.url')
+        .populate('user', 'name profilePicture.url')
         .populate('parentComment');
 
     res.json(comments);
@@ -15,9 +14,7 @@ export const getComment = asyncHandler(async (req, res, next) => {
     const comment = await Comment.findOne({
         _id: req.params.commentId,
         publication: req.publication._id,
-    })
-        .populate('user', 'name')
-        .populate('user', 'profilePicture.url');
+    }).populate('user', 'name profilePicture.url');
 
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
 
