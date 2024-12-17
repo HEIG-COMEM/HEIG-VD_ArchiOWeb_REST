@@ -1,0 +1,22 @@
+meta {
+  name: Post Publication
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/{{api_version}}/publications/
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
+
+body:multipart-form {
+  frontCamera: @file(/Users/jeremiezurfluh/Documents/GitHub/heig-vd/archioweb/rest-api/tests/utils/img/test-front.jpeg)
+  backCamera: @file(/Users/jeremiezurfluh/Documents/GitHub/heig-vd/archioweb/rest-api/tests/utils/img/test-back.jpg)
+  lat: 46.778474
+  lng: 6.641183
+}

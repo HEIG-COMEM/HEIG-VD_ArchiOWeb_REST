@@ -1,0 +1,19 @@
+meta {
+  name: Get Comments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{api_version}}/publications/:id/comments/
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 6756f382d78620f1c3005cb4
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

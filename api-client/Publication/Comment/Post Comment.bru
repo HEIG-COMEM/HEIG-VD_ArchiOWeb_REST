@@ -1,0 +1,24 @@
+meta {
+  name: Post Comment
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/{{api_version}}/publications/:id/comments/
+  body: formUrlEncoded
+  auth: bearer
+}
+
+params:path {
+  id: 67518128ebba7ea82d34e694
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
+
+body:form-urlencoded {
+  content: Resp
+  parentComment: 6751845f6f4c8f2f17b61907
+}

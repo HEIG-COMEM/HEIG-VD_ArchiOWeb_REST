@@ -1,0 +1,20 @@
+meta {
+  name: Get Publications
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{api_version}}/publications/?page=1&pageSize=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  pageSize: 10
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

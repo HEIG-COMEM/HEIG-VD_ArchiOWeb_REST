@@ -1,0 +1,21 @@
+meta {
+  name: Get Friends
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{api_version}}/friends/?page=1&pageSize=5
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  pageSize: 5
+  ~status: pending
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

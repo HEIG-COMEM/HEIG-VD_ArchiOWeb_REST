@@ -1,0 +1,26 @@
+meta {
+  name: Put User
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/{{api_version}}/users/:id
+  body: formUrlEncoded
+  auth: bearer
+}
+
+params:path {
+  id: 
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
+
+body:form-urlencoded {
+  name: 
+  password: 
+  role: 
+  phoneNumber: 
+}

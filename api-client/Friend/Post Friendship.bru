@@ -1,0 +1,19 @@
+meta {
+  name: Post Friendship
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/{{api_version}}/friends/
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
+
+body:form-urlencoded {
+  friendId: 6749ce455bc47edbf4236f3d
+}
