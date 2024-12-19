@@ -1,0 +1,19 @@
+meta {
+  name: Signup
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/{{api_version}}/auth/signup
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  name: User
+  email: test.user@gmail.com
+  password: 1234
+  role: admin
+  ~phone: +41796707880
+}

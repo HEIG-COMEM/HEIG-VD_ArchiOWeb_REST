@@ -1,0 +1,19 @@
+meta {
+  name: Patch User
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/{{api_version}}/users/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 6747131cf7d2c9f7fc029db3
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

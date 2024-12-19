@@ -1,0 +1,22 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/{{api_version}}/auth/login
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  email: admin@bereal.com
+  password: admin
+}
+
+tests {
+  const responseJson = res.getBody();
+  var bodyToken = responseJson.token;
+  bru.setVar("bodyToken",bodyToken)
+}

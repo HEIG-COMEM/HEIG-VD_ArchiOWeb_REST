@@ -1,0 +1,21 @@
+meta {
+  name: Get Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{api_version}}/users/?page=1&pageSize=8&search=a
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  pageSize: 8
+  search: a
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

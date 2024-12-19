@@ -1,0 +1,23 @@
+meta {
+  name: Accept-Deny Friendship
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{base_url}}/{{api_version}}/friends/:friendshipId
+  body: formUrlEncoded
+  auth: bearer
+}
+
+params:path {
+  friendshipId: 67471fd6a3b5d0c7fb8a0280
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
+
+body:form-urlencoded {
+  status: accepted
+}

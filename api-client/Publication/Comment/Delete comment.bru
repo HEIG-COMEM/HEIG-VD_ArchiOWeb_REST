@@ -1,0 +1,16 @@
+meta {
+  name: Delete comment
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/{{api_version}}/publications/:id/comments/:commentId
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 
+  commentId: 
+}

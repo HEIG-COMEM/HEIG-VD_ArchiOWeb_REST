@@ -1,0 +1,19 @@
+meta {
+  name: Delete Publication
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/{{api_version}}/publications/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 671022bc85801a586b39efa9
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}

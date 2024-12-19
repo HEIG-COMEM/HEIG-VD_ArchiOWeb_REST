@@ -1,0 +1,19 @@
+meta {
+  name: Get user stats
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{api_version}}/users/:id/stats
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 6761d518be50560cff1c336b
+}
+
+auth:bearer {
+  token: {{bodyToken}}
+}
