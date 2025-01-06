@@ -6,7 +6,8 @@ import swaggerUi from 'swagger-ui-express';
 const router = express.Router();
 
 // Parse the OpenAPI document.
-const openApiDocument = yaml.load(fs.readFileSync('./openapi.json'));
+// const openApiDocument = yaml.load(fs.readFileSync('./openapi.json'));
+const openApiDocument = yaml.load(fs.readFileSync('./bin/swagger_output.json'));
 // Serve the Swagger UI documentation.
 router.use('/', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
