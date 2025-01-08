@@ -6,7 +6,9 @@ export const authorize = (requiredPermission) => {
             // The user is not authenticated or has no permissions.
             return res
                 .status(403)
-                .send('You are not authorized to perform this action');
+                .json({
+                    message: 'You are not authorized to perform this action',
+                });
         }
 
         const authorized =
@@ -15,7 +17,9 @@ export const authorize = (requiredPermission) => {
             // The user is authenticated but does not have the required permission.
             return res
                 .status(403)
-                .send('You are not authorized to perform this action');
+                .json({
+                    message: 'You are not authorized to perform this action',
+                });
         }
 
         // The user is authorized.

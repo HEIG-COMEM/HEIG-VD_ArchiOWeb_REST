@@ -5,7 +5,9 @@ export const onlyUserOrAdmin = (req, res, next) => {
     ) {
         return res
             .status(403)
-            .send('You are not authorized to perform this action.');
+            .json({
+                message: 'You are not authorized to perform this action.',
+            });
     }
     next();
 };

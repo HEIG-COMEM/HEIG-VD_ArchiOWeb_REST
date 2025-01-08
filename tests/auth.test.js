@@ -79,9 +79,9 @@ describe('POST /signup', () => {
         });
 
         expect(response.status).toBe(400);
-        expect(response.text).toBe(
-            'Fields name, email, and password are required'
-        );
+        expect(response.body).toMatchObject({
+            message: 'Fields name, email, and password are required',
+        });
     });
 });
 

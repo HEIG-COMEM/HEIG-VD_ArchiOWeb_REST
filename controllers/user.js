@@ -96,7 +96,7 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     )
         return res
             .status(400)
-            .send(`Fields name, password and email are required`);
+            .json({ message: `Fields name, password and email are required` });
 
     req.user.name = req.body.name;
 

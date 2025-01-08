@@ -60,12 +60,14 @@ export const createFriend = asyncHandler(async (req, res) => {
         res.status(201).json(friend);
     } catch (error) {
         if (error.message === 'The friendship already exists') {
-            return res.status(400).send('The friendship already exists');
+            return res
+                .status(400)
+                .json({ message: 'The friendship already exists' });
         }
         if (error.name === 'ValidationError') {
-            return res.status(400).send(error.message);
+            return res.status(400).json(error.message);
         }
-        res.status(500).send('Server error');
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
@@ -73,7 +75,7 @@ export const deleteFriend = asyncHandler(async (req, res) => {
     const friendship = await Friend.findById(req.params.friendshipId);
 
     if (!friendship) {
-        return res.status(404).send('Friend not found.');
+        return res.status(404).json({ message: 'Friend not found.' });
     }
 
     await friendship.deleteOne();
@@ -87,7 +89,7 @@ export const updateFriendStatus = asyncHandler(async (req, res) => {
     });
 
     if (!friendship) {
-        return res.status(404).send('Friend request not found.');
+        return res.status(404).json({ message: 'Friend request not found.' });
     }
 
     if (req.body.status === 'denied') {
@@ -113,5 +115,5 @@ export const updateFriendStatus = asyncHandler(async (req, res) => {
         return res.status(200).json(friendship);
     }
 
-    res.status(400).send('Invalid status');
+    res.status(400).json({ message: 'Invalid status' });
 });
