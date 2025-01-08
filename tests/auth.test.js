@@ -1,12 +1,24 @@
 import supertest from 'supertest';
 
 import app from '../app.js';
-import { cleanUpDatabase, disconnectDatabase } from './utils/utils.js';
+import {
+    cleanUpDatabase,
+    disconnectDatabase,
+    createRandomUser,
+} from './utils/utils.js';
 
 // Clean up leftover data in the database before starting to test
-beforeAll(cleanUpDatabase);
+beforeEach(cleanUpDatabase);
 
 const href = `/api/v1/auth`;
+
+beforeEach(async () => {
+    await createRandomUser({
+        name: 'test.user',
+        email: 'user@test.ch',
+        password: '1234',
+    }).save();
+});
 
 // Test the POST /signup route
 describe('POST /signup', () => {
@@ -89,11 +101,6 @@ describe('POST /signup', () => {
 describe('POST /login', () => {
     // Test that the user can log in with valid data.
     test('logs in with valid data and returns a token', async () => {
-        await supertest(app).post(`${href}/signup`).send({
-            name: 'test.user',
-            email: 'user@test.ch',
-            password: '1234',
-        });
         const response = await supertest(app).post(`${href}/login`).send({
             email: 'user@test.ch',
             password: '1234',
@@ -116,11 +123,6 @@ describe('POST /login', () => {
 
     // Test that the user cannot log in with an invalid password.
     test('does not log in with an invalid password', async () => {
-        await supertest(app).post(`${href}/signup`).send({
-            name: 'test.user',
-            email: 'user@test.ch',
-            password: '1234',
-        });
         const response = await supertest(app).post(`${href}/login`).send({
             email: 'user@test.ch',
             password: '5678',

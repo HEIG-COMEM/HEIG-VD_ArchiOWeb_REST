@@ -113,7 +113,9 @@ describe('GET /users/:id', () => {
             .get(`${href}/${invalidId}`)
             .set('Authorization', `Bearer ${jwt}`);
         expect(response.status).toBe(400);
-        expect(response.text).toBe(`ID ${invalidId} is not valid.`);
+        expect(response.body).toMatchObject({
+            message: `ID ${invalidId} is not valid.`,
+        });
     });
 
     // Test of the return 404 if the user is not found
@@ -124,7 +126,9 @@ describe('GET /users/:id', () => {
             .get(`${href}/${falseId}`)
             .set('Authorization', `Bearer ${jwt}`);
         expect(response.status).toBe(404);
-        expect(response.text).toBe(`No user found with ID ${falseId}.`);
+        expect(response.body).toMatchObject({
+            message: `No user found with ID ${falseId}.`,
+        });
     });
 
     // Test return 401 if the user is not authenticated
@@ -133,7 +137,9 @@ describe('GET /users/:id', () => {
             `${href}/${user1._id.toString()}`
         );
         expect(response.status).toBe(401);
-        expect(response.text).toBe('Authorization header is missing.');
+        expect(response.body).toMatchObject({
+            message: 'Authorization header is missing.',
+        });
     });
 });
 
@@ -302,9 +308,9 @@ describe('PUT /users', () => {
                 name: 'only.name',
             });
         expect(response.status).toBe(400);
-        expect(response.text).toBe(
-            'Fields name, password and email are required'
-        );
+        expect(response.body).toMatchObject({
+            message: 'Fields name, password and email are required',
+        });
     });
 
     // Test to update the user with an invalid email and name
@@ -335,9 +341,9 @@ describe('PUT /users', () => {
                 password: 'password',
             });
         expect(response.status).toBe(403);
-        expect(response.text).toBe(
-            'You are not authorized to perform this action.'
-        );
+        expect(response.body).toMatchObject({
+            message: 'You are not authorized to perform this action.',
+        });
     });
 
     // Test of the return 400 if the user id is invalid
@@ -353,7 +359,9 @@ describe('PUT /users', () => {
                 password: 'password',
             });
         expect(response.status).toBe(400);
-        expect(response.text).toBe(`ID ${invalidId} is not valid.`);
+        expect(response.body).toMatchObject({
+            message: `ID ${invalidId} is not valid.`,
+        });
     });
 
     // Test of the return 404 if the user is not found
@@ -370,7 +378,9 @@ describe('PUT /users', () => {
                 profilePictureUrl: 'http://change.by.user/image.jpg',
             });
         expect(response.status).toBe(404);
-        expect(response.text).toBe(`No user found with ID ${falseId}.`);
+        expect(response.body).toMatchObject({
+            message: `No user found with ID ${falseId}.`,
+        });
     });
 
     // Test return 401 if the user is not authenticated
@@ -384,7 +394,9 @@ describe('PUT /users', () => {
                 profilePictureUrl: 'http://change.by.user/image.jpg',
             });
         expect(response.status).toBe(401);
-        expect(response.text).toBe('Authorization header is missing.');
+        expect(response.body).toMatchObject({
+            message: 'Authorization header is missing.',
+        });
     });
 });
 
@@ -455,9 +467,9 @@ describe('PATCH /users', () => {
                 name: 'new.name',
             });
         expect(response.status).toBe(403);
-        expect(response.text).toBe(
-            'You are not authorized to perform this action.'
-        );
+        expect(response.body).toMatchObject({
+            message: 'You are not authorized to perform this action.',
+        });
     });
 
     // 4 tests to update each field of the user
@@ -623,9 +635,9 @@ describe('DELETE /users', () => {
             .delete(`${href}/${adminUser1._id.toString()}`)
             .set('Authorization', `Bearer ${jwt}`);
         expect(response.status).toBe(403);
-        expect(response.text).toBe(
-            'You are not authorized to perform this action.'
-        );
+        expect(response.body).toMatchObject({
+            message: 'You are not authorized to perform this action.',
+        });
     });
 
     test.todo('Test consistency of the database after deletion');
