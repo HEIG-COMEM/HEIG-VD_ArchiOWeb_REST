@@ -29,13 +29,6 @@ router.delete(
     deletePublication
 );
 
-router.use(
-    '/:id/comments',
-    findPublicationById,
-    commentRouter
-    /*
-    #swagger.tags = ['Comments'];
-    */
-);
+router.use('/:id/comments', findPublicationById, commentRouter);
 
 export default router;

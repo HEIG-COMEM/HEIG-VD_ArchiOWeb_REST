@@ -5,10 +5,13 @@
         "version": "1.0.0",
         "description": "**A demonstration REST API developed with [Express](https://expressjs.com).**"
     },
-    "servers": [{
-        "url": "https://heig-vd-archioweb-rest.onrender.com/api/v1"
-    }],
-    "tags": [{
+    "servers": [
+        {
+            "url": "https://heig-vd-archioweb-rest.onrender.com/api/v1"
+        }
+    ],
+    "tags": [
+        {
             "name": "Auth",
             "description": "Authentication management"
         },
@@ -128,9 +131,11 @@
             "get": {
                 "summary": "Get the authenticated user",
                 "tags": ["Auth"],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "User found",
@@ -153,7 +158,8 @@
                 "summary": "Get Users",
                 "tags": ["Users"],
                 "description": "Permet d'afficher les utilisateurs disponibles.",
-                "parameters": [{
+                "parameters": [
+                    {
                         "in": "query",
                         "name": "page",
                         "required": false,
@@ -174,9 +180,11 @@
                         "description": "Nombre d'éléments par page."
                     }
                 ],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Liste des utilisateurs",
@@ -204,18 +212,22 @@
             "get": {
                 "summary": "Get the user information",
                 "tags": ["Users"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Unique identifier of the user"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Unique identifier of the user"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "User found",
@@ -238,15 +250,17 @@
             "put": {
                 "summary": "Allows to modify the user giving every informations",
                 "tags": ["Users"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "UUID"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "UUID"
+                        }
                     }
-                }],
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -257,9 +271,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "User updated",
@@ -285,15 +301,17 @@
             "patch": {
                 "summary": "Allows to modify a user giving only the informations we want to change",
                 "tags": ["Users"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "UUID"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "UUID"
+                        }
                     }
-                }],
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -304,9 +322,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "User updated",
@@ -332,18 +352,22 @@
             "delete": {
                 "summary": "Allows to delete a user",
                 "tags": ["Users"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "UUID"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "UUID"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "User deleted"
@@ -367,14 +391,16 @@
             "get": {
                 "tags": ["Users"],
                 "description": "Get the statistics of a user.",
-                "parameters": [{
-                    "name": "id",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
-                }],
+                ],
                 "responses": {
                     "200": {
                         "description": "The statistics of the user.",
@@ -396,18 +422,22 @@
                         "description": "Not Found"
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }]
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/publications": {
             "get": {
                 "summary": "Get publications",
                 "tags": ["Publications"],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Publications retrieved",
@@ -446,9 +476,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Publication created",
@@ -476,18 +508,22 @@
             "get": {
                 "summary": "Get the publications informations",
                 "tags": ["Publications"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de la publication"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de la publication"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Publication retrieved",
@@ -516,18 +552,22 @@
             "delete": {
                 "summary": "Allows to delete a publication",
                 "tags": ["Publications"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de la publication"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de la publication"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Publication deleted"
@@ -548,18 +588,22 @@
             "get": {
                 "summary": "Allows to get all the comments under a publication",
                 "tags": ["Comments"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de la publication"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de la publication"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Comments retrieved",
@@ -588,15 +632,17 @@
             "post": {
                 "summary": "Allows to create a new comment",
                 "tags": ["Comments"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de la publication"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de la publication"
+                        }
                     }
-                }],
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -607,9 +653,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Comment created",
@@ -637,7 +685,8 @@
             "delete": {
                 "tags": ["Comments"],
                 "description": "",
-                "parameters": [{
+                "parameters": [
+                    {
                         "name": "id",
                         "in": "path",
                         "required": true,
@@ -671,16 +720,19 @@
                         "description": "Not Found"
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }]
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/friends": {
             "get": {
                 "summary": "Allows to see a list of your friends",
                 "tags": ["Friends"],
-                "parameters": [{
+                "parameters": [
+                    {
                         "in": "query",
                         "name": "page",
                         "required": false,
@@ -711,9 +763,11 @@
                         }
                     }
                 ],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Friends list retrieved",
@@ -749,9 +803,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Friendship created",
@@ -779,18 +835,22 @@
             "delete": {
                 "summary": "Allows to delete a friend",
                 "tags": ["Friends"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "friendshipId",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de l'amitié"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "friendshipId",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de l'amitié"
+                        }
                     }
-                }],
-                "security": [{
-                    "bearerAuth": []
-                }],
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Friend deleted"
@@ -809,15 +869,17 @@
             "patch": {
                 "summary": "Allows to update the status of a friendship",
                 "tags": ["Friends"],
-                "parameters": [{
-                    "in": "path",
-                    "name": "friendshipId",
-                    "required": true,
-                    "schema": {
-                        "type": "string",
-                        "description": "Identifiant unique de l'amitié"
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "friendshipId",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Identifiant unique de l'amitié"
+                        }
                     }
-                }],
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -828,9 +890,11 @@
                         }
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Friendship status updated",
@@ -885,9 +949,11 @@
                         "description": "Unprocessable entity"
                     }
                 },
-                "security": [{
-                    "bearerAuth": []
-                }]
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -932,7 +998,8 @@
                         "example": "user"
                     },
                     "profilePictureUrl": {
-                        "oneOf": [{
+                        "oneOf": [
+                            {
                                 "type": "string",
                                 "example": "default"
                             },
@@ -1002,7 +1069,8 @@
                         "format": "password"
                     },
                     "profilePictureUrl": {
-                        "oneOf": [{
+                        "oneOf": [
+                            {
                                 "type": "string",
                                 "example": "default"
                             },
