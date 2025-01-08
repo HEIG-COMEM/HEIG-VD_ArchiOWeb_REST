@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 import bcrypt from 'bcrypt';
 import { deleteImage } from '../controllers/cdn.js';
-import { tr } from '@faker-js/faker';
+import Friend from './friend.js';
 const COST_FACTOR = 10;
 
 // Define the schema for users
@@ -101,6 +101,17 @@ userSchema.methods.removeProfilePicture = async function () {
     this.profilePicture.url = User.schema.path('profilePicture.url').default();
     this.profilePicture.id = User.schema.path('profilePicture.id').default();
     await this.save();
+};
+
+userSchema.methods.isFriend = async function (userId) {
+    if (this.id === userId) return false; // A user is not a friend of themselves
+
+    const friend = await Friend.findOne({
+        users: { $all: [this.id, userId] },
+        status: 'accepted',
+    });
+
+    return !!friend;
 };
 
 userSchema.methods.comparePassword = async function (candidatePassword) {

@@ -25,7 +25,10 @@ export const getUsers = asyncHandler(async (req, res, next) => {
 });
 
 export const getUser = asyncHandler(async (req, res, next) => {
-    res.json(req.user);
+    res.json({
+        ...req.user.toJSON(),
+        isFriend: req.isFriend,
+    });
 });
 
 export const getUserStats = asyncHandler(async (req, res, next) => {

@@ -10,7 +10,9 @@ export const findUserById = async (req, res, next) => {
     if (!user) {
         return res.status(404).send(`No user found with ID ${req.params.id}.`);
     }
+    const isFriend = await user.isFriend(req.currentUserId);
     req.user = user;
+    req.isFriend = isFriend;
     next();
 };
 
