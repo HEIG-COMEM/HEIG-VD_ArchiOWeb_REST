@@ -71,13 +71,13 @@ const userSchema = new Schema({
 });
 
 // Middleware to update the updatedAt field
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
     const user = this;
 
     // Only hash the password if it has been modified (or is new)
     if (user.isModified('password')) {
         // Hash the password
-        user.password = User.hashPassword(user.password);
+        user.password = await User.hashPassword(user.password);
     }
     this.updatedAt = Date.now();
     next();
