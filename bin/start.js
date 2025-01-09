@@ -17,6 +17,7 @@ import wsServer from '../services/websocket/websocketServer.js';
  */
 if (config.cors.origin) {
     app.use(cors(config.cors));
+    app.options('*', cors(config.cors)); // Enable pre-flight
     console.log(`CORS origin set to ${config.cors.origin}`);
 }
 
