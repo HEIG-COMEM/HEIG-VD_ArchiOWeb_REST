@@ -15,7 +15,10 @@ import wsServer from '../services/websocket/websocketServer.js';
 /**
  * Set CORS policy
  */
-if (config.cors.origin) app.use(cors(config.cors));
+if (config.cors.origin) {
+    app.use(cors(config.cors));
+    console.log(`CORS origin set to ${config.cors.origin}`);
+}
 
 const debug = createDebugger('rest-api:server');
 /**
