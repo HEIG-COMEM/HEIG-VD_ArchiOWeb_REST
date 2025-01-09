@@ -15,12 +15,12 @@ const app = express();
 /**
  * Set CORS policy
  */
-app.use(cors());
-// if (config.cors.origin) {
-//     app.use(cors(config.cors));
-//     app.options('*', cors(config.cors)); // Enable pre-flight
-//     console.log(`CORS origin set to ${config.cors.origin}`);
-// }
+app.use(
+    cors({
+        origin: config.cors.origin,
+        optionsSuccessStatus: config.cors.optionsSuccessStatus,
+    })
+);
 
 // Log requests (except in test mode).
 if (process.env.NODE_ENV !== 'test') {

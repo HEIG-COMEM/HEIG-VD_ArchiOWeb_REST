@@ -18,8 +18,13 @@ export const cors = {
     origin: process.env.CORS_ORIGIN,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
-    optionsSuccessStatus: process.env.CORS_OPTIONS_SUCCESS_STATUS || 200,
+    optionsSuccessStatus: 200,
 };
+
+if (!cors.origin) {
+    console.error('Please set the CORS_ORIGIN environment variable');
+    process.exit(1);
+}
 
 if (!secretKey) {
     console.error('Please set the SECRET_KEY environment variable');
