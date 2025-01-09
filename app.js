@@ -2,6 +2,7 @@ import express from 'express';
 import createError from 'http-errors';
 import logger from 'morgan';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 import * as config from './config.js';
 mongoose.connect(config.mongoUri);
@@ -10,6 +11,16 @@ import indexRouter from './routes/index.js';
 import documentationRouter from './routes/documentation.js';
 
 const app = express();
+
+/**
+ * Set CORS policy
+ */
+app.use(cors());
+// if (config.cors.origin) {
+//     app.use(cors(config.cors));
+//     app.options('*', cors(config.cors)); // Enable pre-flight
+//     console.log(`CORS origin set to ${config.cors.origin}`);
+// }
 
 // Log requests (except in test mode).
 if (process.env.NODE_ENV !== 'test') {

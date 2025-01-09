@@ -16,6 +16,8 @@ export const seedAdminEmail = process.env.SEED_ADMIN_EMAIL;
 export const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD;
 export const cors = {
     origin: process.env.CORS_ORIGIN,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
     optionsSuccessStatus: process.env.CORS_OPTIONS_SUCCESS_STATUS || 200,
 };
 
