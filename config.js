@@ -14,6 +14,10 @@ export const cloudinaryPrefix = process.env.NODE_ENV === 'test' ? 'test-' : '';
 export const cloudinaryTags = process.env.NODE_ENV === 'test' ? 'test' : '';
 export const seedAdminEmail = process.env.SEED_ADMIN_EMAIL;
 export const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD;
+export const cors = {
+    origin: process.env.CORS_ORIGIN,
+    optionsSuccessStatus: process.env.CORS_OPTIONS_SUCCESS_STATUS || 200,
+};
 
 if (!secretKey) {
     console.error('Please set the SECRET_KEY environment variable');

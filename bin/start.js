@@ -9,7 +9,13 @@ import * as config from '../config.js';
 import app from '../app.js';
 import createDebugger from 'debug';
 import http from 'http';
+import cors from 'cors';
 import wsServer from '../services/websocket/websocketServer.js';
+
+/**
+ * Set CORS policy
+ */
+if (config.cors.origin) app.use(cors(config.cors));
 
 const debug = createDebugger('rest-api:server');
 /**
