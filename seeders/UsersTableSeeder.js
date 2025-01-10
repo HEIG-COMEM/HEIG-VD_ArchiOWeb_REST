@@ -40,12 +40,10 @@ export const seedUsers = async () => {
         role: 'admin',
     });
 
-    admin.password = await User.hashPassword(admin.password);
     await new User(admin).save();
 
     return Promise.all(
         users.map(async (user) => {
-            user.password = await User.hashPassword(user.password);
             await new User(user).save();
         })
     );
