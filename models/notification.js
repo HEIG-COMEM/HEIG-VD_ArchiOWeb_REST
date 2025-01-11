@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import * as config from '../config.js';
-import * as OneSignal from '@onesignal/node-onesignal';
 
 const Schema = mongoose.Schema;
 
@@ -22,34 +21,26 @@ const notificationSchema = new Schema({
     },
 });
 
-const app_key_provider = {
-    getToken() {
-        return config.onesignalRestApiKey;
-    },
-};
-
-const configuration = OneSignal.createConfiguration({
-    authMethods: {
-        app_key: {
-            tokenProvider: app_key_provider,
-        },
-    },
-});
-
-const client = new OneSignal.DefaultApi(configuration);
-
 const oneSignalNotification = async (mongoNotif) => {
-    const notification = new OneSignal.Notification();
-    notification.app_id = config.onesignalAppId;
-    notification.included_segments = ['Subscribed Users'];
-    notification.contents = {
-        en: mongoNotif.content,
+    const url = 'https://api.onesignal.com/notifications?c=push';
+    const options = {
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+            Authorization: `Key ${config.onesignalRestApiKey}`,
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            app_id: config.onesignalAppId,
+            contents: { en: mongoNotif.content },
+            included_segments: ['Total Subscriptions'],
+        }),
     };
 
-    // TODO: Uncomment this line to send the notification, only once the OneSignal account is set up
-    // const { id } = await client.createNotification(notification);
-    // return id;
-    return '12345';
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    return data.id;
 };
 
 notificationSchema.pre('save', async function (next) {
@@ -66,7 +57,11 @@ notificationSchema.pre('save', async function (next) {
         throw new Error('notification already sent today');
     }
 
-    this.oneSignalNotificationId = await oneSignalNotification(this);
+    const notificationId = await oneSignalNotification(this);
+    if (!notificationId) {
+        throw new Error('failed to send notification');
+    }
+    this.oneSignalNotificationId = notificationId;
 
     next();
 });
