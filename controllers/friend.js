@@ -57,6 +57,17 @@ export const createFriend = asyncHandler(async (req, res) => {
             req.currentUserId,
             req.body.friendId
         );
+
+        notifyUsers([req.body.friendId], {
+            type: 'friendRequestReceived',
+            data: {
+                friendshipId: friend._id,
+                user: {
+                    _id: req.currentUserId,
+                },
+            },
+        });
+
         res.status(201).json(friend);
     } catch (error) {
         if (error.message === 'The friendship already exists') {
