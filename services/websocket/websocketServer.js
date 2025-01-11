@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import { authenticate } from './authenticate.js';
 
 const wsServer = new WebSocketServer({ noServer: true });
