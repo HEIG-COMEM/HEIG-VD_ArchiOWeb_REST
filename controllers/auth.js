@@ -18,7 +18,6 @@ export const signup = asyncHandler(async (req, res, next) => {
     }
 
     // Create a new user and save it to the database
-    req.body.password = await User.hashPassword(req.body.password);
     const newUser = new User(req.body);
     try {
         await newUser.save();

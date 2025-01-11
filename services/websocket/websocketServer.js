@@ -8,6 +8,7 @@ wsServer.on('connection', async (ws, req) => {
     await authenticate(ws, req, wsServer).catch((error) =>
         ws.close(4001, error.message)
     );
+    if (!ws.currentUserId) ws.close(4001, 'Authentication failed');
 
     ws.send('[Server] Authentication successful');
     console.log(`[WS] User authenticated: ${ws.currentUserId}`);

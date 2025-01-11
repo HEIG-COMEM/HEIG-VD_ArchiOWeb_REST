@@ -7,10 +7,10 @@ const verifyJwt = promisify(jwt.verify);
 
 export const authenticate = async (ws, req, wsServer) => {
     try {
-        const authorization = req.headers.authorization;
+        const authorization = req.headers['sec-websocket-protocol'];
         if (!authorization) throw new Error('Authorization header is missing.');
 
-        const match = authorization.match(/^Bearer (.+)$/);
+        const match = authorization.match(/^Bearer, (.+)$/);
         if (!match)
             throw new Error('Authorization header is not a bearer token.');
 
