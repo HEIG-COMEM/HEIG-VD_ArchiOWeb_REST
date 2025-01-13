@@ -234,7 +234,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "$ref": "#/components/schemas/UserGet"
                                 }
                             }
                         }
@@ -1019,6 +1019,67 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2024-10-30T13:39:08.349Z"
+                    }
+                },
+                "required": [
+                    "_id",
+                    "name",
+                    "email",
+                    "role",
+                    "profilePictureUrl",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            },
+            "UserGet": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "example": "672236fc79c78a9de1e25c59",
+                        "description": "UUID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe",
+                        "description": "Name of the user."
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@email.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "user"
+                    },
+                    "profilePictureUrl": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "example": "default"
+                            },
+                            {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        ],
+                        "description": "Un fichier à envoyer au serveur"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-30T13:39:08.348Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-30T13:39:08.349Z"
+                    },
+                    "isFriend": {
+                        "type": "integer",
+                        "example": 0,
+                        "description": "1 if the user is a friend, 0 if a request is pending, -1 if not a friend"
                     }
                 },
                 "required": [
