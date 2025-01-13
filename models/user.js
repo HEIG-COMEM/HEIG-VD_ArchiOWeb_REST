@@ -108,10 +108,9 @@ userSchema.methods.isFriend = async function (userId) {
 
     const friend = await Friend.findOne({
         users: { $all: [this.id, userId] },
-        status: 'accepted',
     });
 
-    return !!friend;
+    return friend ? (friend.status === 'accepted' ? 1 : 0) : -1;
 };
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
