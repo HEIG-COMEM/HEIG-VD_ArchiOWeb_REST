@@ -83,7 +83,7 @@ const uploadPublicationImages = async (req, res, next) => {
         resource_type: 'image',
         asset_folder: `${config.cloudinaryPrefix}publications`,
         tags: config.cloudinaryTags,
-        aspect_ratio: '2:3',
+        aspect_ratio: '3:4',
         crop: 'auto',
         gravity: 'auto',
         format: 'webp',
