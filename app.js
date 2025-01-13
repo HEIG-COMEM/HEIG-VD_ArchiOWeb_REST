@@ -19,6 +19,12 @@ app.use(
     cors({
         origin: config.cors.origin,
         optionsSuccessStatus: config.cors.optionsSuccessStatus,
+        exposedHeaders: [
+            'Pagination-Page',
+            'Pagination-Pages-Size',
+            'Pagination-Total',
+            'Pagination-Total-Count',
+        ],
     })
 );
 
