@@ -43,6 +43,13 @@ export const getFriends = asyncHandler(async (req, res) => {
 
     const totalPages = Math.ceil(count / pageSize);
 
+    res.set('Access-Control-Expose-Headers', [
+        'Pagination-Page',
+        'Pagination-Page-Size',
+        'Pagination-Total-Pages',
+        'Pagination-Total-Count',
+    ]);
+
     res.set('Pagination-Page', page);
     res.set('Pagination-Page-Size', pageSize);
     res.set('Pagination-Total-Pages', totalPages);
