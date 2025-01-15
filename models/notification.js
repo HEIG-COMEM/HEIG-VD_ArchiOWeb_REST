@@ -34,6 +34,14 @@ const oneSignalNotification = async (mongoNotif) => {
             app_id: config.onesignalAppId,
             contents: { en: mongoNotif.content },
             included_segments: ['Total Subscriptions'],
+            small_icon:
+                'https://res.cloudinary.com/dsfssjubh/image/upload/v1736975785/logo_czekgx.png',
+            large_icon:
+                'https://res.cloudinary.com/dsfssjubh/image/upload/v1736975785/logo_czekgx.png',
+            chrome_web_icon:
+                'https://res.cloudinary.com/dsfssjubh/image/upload/v1736975785/logo_czekgx.png',
+            chrome_web_badge:
+                'https://res.cloudinary.com/dsfssjubh/image/upload/v1736975785/logo_czekgx.png',
         }),
     };
 
