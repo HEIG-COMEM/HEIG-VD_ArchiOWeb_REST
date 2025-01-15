@@ -44,10 +44,10 @@
         "/status": {
             "get": {
                 "tags": ["Status"],
-                "description": "Check the status of the API.",
+                "description": "Check the status of the API",
                 "responses": {
                     "200": {
-                        "description": "The API is running.",
+                        "description": "The API is running",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -62,7 +62,7 @@
         "/auth/signup": {
             "post": {
                 "tags": ["Auth"],
-                "description": "Register a new user.",
+                "description": "Register a new user",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -96,7 +96,7 @@
         "/auth/login": {
             "post": {
                 "tags": ["Auth"],
-                "description": "Authenticate a user.",
+                "description": "Authenticate a user",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -157,7 +157,7 @@
             "get": {
                 "summary": "Get Users",
                 "tags": ["Users"],
-                "description": "Permet d'afficher les utilisateurs disponibles.",
+                "description": "Get a list of users",
                 "parameters": [
                     {
                         "in": "query",
@@ -167,7 +167,7 @@
                             "type": "integer",
                             "example": 1
                         },
-                        "description": "Numéro de page des résultats."
+                        "description": "Page number of the results"
                     },
                     {
                         "in": "query",
@@ -177,7 +177,17 @@
                             "type": "integer",
                             "example": 10
                         },
-                        "description": "Nombre d'éléments par page."
+                        "description": "Number of elements per page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "john"
+                        },
+                        "description": "Search for a user by name"
                     }
                 ],
                 "security": [
@@ -187,7 +197,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Liste des utilisateurs",
+                        "description": "Users retrieved",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -390,7 +400,7 @@
         "/users/{id}/stats": {
             "get": {
                 "tags": ["Users"],
-                "description": "Get the statistics of a user.",
+                "description": "Get the statistics of a user",
                 "parameters": [
                     {
                         "name": "id",
@@ -403,7 +413,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "The statistics of the user.",
+                        "description": "The statistics of the user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -433,6 +443,38 @@
             "get": {
                 "summary": "Get publications",
                 "tags": ["Publications"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "description": "Page number of the results"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        },
+                        "description": "Number of elements per page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "672236fc79c78a9de1e25c59",
+                            "description": "Unique identifier of the user"
+                        }
+                    }
+                ],
                 "security": [
                     {
                         "bearerAuth": []
@@ -740,7 +782,7 @@
                             "type": "integer",
                             "example": 1
                         },
-                        "description": "Numéro de page des résultats."
+                        "description": "Page number of the results"
                     },
                     {
                         "in": "query",
@@ -750,7 +792,7 @@
                             "type": "integer",
                             "example": 10
                         },
-                        "description": "Nombre d'éléments par page."
+                        "description": "Number of elements per page"
                     },
                     {
                         "in": "query",
@@ -759,7 +801,7 @@
                         "schema": {
                             "type": "string",
                             "enum": ["pending", "accepted"],
-                            "description": "Statut de l'amitié."
+                            "description": "Friendship status"
                         }
                     }
                 ],
@@ -876,7 +918,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "description": "Identifiant unique de l'amitié"
+                            "description": "Unique identifier of the friendship"
                         }
                     }
                 ],
@@ -986,7 +1028,7 @@
                     "name": {
                         "type": "string",
                         "example": "John Doe",
-                        "description": "Name of the user."
+                        "description": "Name of the user"
                     },
                     "email": {
                         "type": "string",
@@ -1042,7 +1084,7 @@
                     "name": {
                         "type": "string",
                         "example": "John Doe",
-                        "description": "Name of the user."
+                        "description": "Name of the user"
                     },
                     "email": {
                         "type": "string",
@@ -1098,7 +1140,7 @@
                     "name": {
                         "type": "string",
                         "example": "John Doe",
-                        "description": "Name of the user."
+                        "description": "Name of the user"
                     },
                     "email": {
                         "type": "string",
@@ -1118,7 +1160,7 @@
                     "name": {
                         "type": "string",
                         "example": "John Doe",
-                        "description": "Name of the user."
+                        "description": "Name of the user"
                     },
                     "email": {
                         "type": "string",
@@ -1332,7 +1374,7 @@
                     },
                     "content": {
                         "type": "string",
-                        "example": "Tactus tamquam aspernatur spoliatio alo rem aveho demitto defero."
+                        "example": "Tactus tamquam aspernatur spoliatio alo rem aveho demitto defero"
                     },
                     "parentComment": {
                         "type": "string",
