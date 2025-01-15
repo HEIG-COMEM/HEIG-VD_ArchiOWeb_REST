@@ -17,6 +17,16 @@ export const sendBeRealNotification = asyncHandler(async (req, res) => {
 });
 
 export const getNotification = asyncHandler(async (req, res) => {
-    const notifications = await Notification.find();
+    const onlylast =
+        (req.query.onlylast && req.query.onlylast === 'true') || false;
+
+    let notifications = null;
+    if (onlylast) {
+        notifications = await Notification.find()
+            .sort({ createdAt: -1 })
+            .limit(1);
+    } else {
+        notifications = await Notification.find().sort({ createdAt: -1 });
+    }
     res.status(200).json(notifications);
 });

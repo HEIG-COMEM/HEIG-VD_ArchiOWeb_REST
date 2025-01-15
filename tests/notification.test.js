@@ -11,9 +11,9 @@ const adminJwt = await generateValidJwt(adminUser);
 
 beforeEach(cleanUpDatabase);
 
-const href = `/api/v1/admin/notifications`;
+const href = `/api/v1/notifications`;
 
-describe('POST /admin/notifications', () => {
+describe('POST /notifications', () => {
     test('test that the user can not create a notification', async () => {
         const response = await supertest(app)
             .post(`${href}`)
