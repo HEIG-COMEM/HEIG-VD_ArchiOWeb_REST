@@ -39,14 +39,28 @@ const getPublicationsFeed = asyncHandler(async (req, res, next) => {
 
     const userId = req.currentUserId;
 
+    //find all friends of the user withouth the user itself
     const friendsId = await Friend.find({
         users: userId,
         status: 'accepted',
     }).distinct('users');
 
+    // remove the new ObjectId of the user from the friends list
+    const onlyFriendsId = friendsId.map((friend) => {
+        if (friend.toString() !== userId) {
+            return friend;
+        }
+        return null;
+    });
+
+    // remove the null values from the array
+    const sanitizedFriendsId = onlyFriendsId.filter(
+        (friend) => friend !== null
+    );
+
     const [publications, count] = await Promise.all([
         Publication.find({
-            user: { $in: friendsId },
+            user: { $in: sanitizedFriendsId },
         })
             .limit(pageSize)
             .skip(pageSize * (page - 1))
