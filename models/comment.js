@@ -48,7 +48,12 @@ commentSchema.pre('deleteOne', { document: true }, async function (next) {
 
 // Method to remove all descendant comments
 commentSchema.methods.removeDescendants = async function () {
-    await this.model('Comment').deleteMany({ parentComment: this._id });
+    const descendants = await this.model('Comment').find({
+        parentComment: this._id,
+    });
+    for (const descendant of descendants) {
+        await descendant.deleteOne();
+    }
 };
 
 // Set toJSON transformation
