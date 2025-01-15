@@ -8,6 +8,9 @@ export const getPublications = asyncHandler(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const userId = req.query.userId || null;
 
+    if (req.respondWith && req.respondWith === 'feed')
+        return getPublicationsFeed(req, res, next);
+
     const [publications, count] = await Promise.all([
         Publication.find({
             ...(userId && { user: userId }),
@@ -16,6 +19,39 @@ export const getPublications = asyncHandler(async (req, res, next) => {
             .skip(pageSize * (page - 1))
             .populate('user', 'name profilePicture.url'),
         Publication.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(count / pageSize);
+
+    res.set('Pagination-Page', page);
+    res.set('Pagination-Pages-Size', pageSize);
+    res.set('Pagination-Total', totalPages);
+    res.set('Pagination-Total-Count', count);
+
+    res.json(publications);
+});
+
+const getPublicationsFeed = asyncHandler(async (req, res, next) => {
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const page = parseInt(req.query.page) || 1;
+
+    const userId = req.currentUserId;
+
+    const friendsId = await Friend.find({
+        users: userId,
+        status: 'accepted',
+    }).distinct('users');
+
+    const [publications, count] = await Promise.all([
+        Publication.find({
+            user: { $in: friendsId },
+        })
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('user', 'name profilePicture.url'),
+        Publication.countDocuments({
+            user: { $in: friendsId },
+        }),
     ]);
 
     const totalPages = Math.ceil(count / pageSize);
