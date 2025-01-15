@@ -43,6 +43,10 @@ export const getFriends = asyncHandler(async (req, res) => {
 
     const totalPages = Math.ceil(count / pageSize);
 
+    /**
+     * For some reason, the pagination headers are not being sent in the response with the middleware
+     * So we need to set them manually
+     */
     res.set('Access-Control-Expose-Headers', [
         'Pagination-Page',
         'Pagination-Page-Size',
