@@ -8,11 +8,6 @@ import app from '../app.js';
 import { cleanUpDatabase, disconnectDatabase } from './utils/utils.js';
 import path from 'path';
 
-const user = await createRandomUser().save();
-const adminUser = await createRandomUser({ role: 'admin' }).save();
-const jwt = await generateValidJwt(user);
-const adminJwt = await generateValidJwt(adminUser);
-
 beforeEach(cleanUpDatabase);
 
 const href = `/api/v1/publications`;
@@ -20,6 +15,18 @@ const href = `/api/v1/publications`;
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const frontImagePath = path.resolve(__dirname, 'utils/img/', 'test-front.jpeg');
 const backImagePath = path.resolve(__dirname, 'utils/img/', 'test-back.jpg');
+
+let user;
+let adminUser;
+let jwt;
+let adminJwt;
+
+beforeEach(async () => {
+    user = await createRandomUser().save();
+    adminUser = await createRandomUser({ role: 'admin' }).save();
+    jwt = await generateValidJwt(user);
+    adminJwt = await generateValidJwt(adminUser);
+});
 
 describe('GET /publications', () => {
     test('test that the user can get all publications', async () => {
@@ -30,6 +37,8 @@ describe('GET /publications', () => {
         const response = await supertest(app)
             .get(`${href}`)
             .set('Authorization', `Bearer ${jwt}`);
+
+        console.log(response.body);
         expect(response.status).toBe(200);
         expect(response.body).toHaveLength(3);
     });
