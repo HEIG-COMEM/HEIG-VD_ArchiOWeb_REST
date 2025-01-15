@@ -1,9 +1,13 @@
 import express from 'express';
 
-import { sendBeRealNotification } from '../controllers/admin.js';
+import {
+    sendBeRealNotification,
+    getNotification,
+} from '../controllers/admin.js';
 
 const router = express.Router({ mergeParams: true });
 
+router.get('/notifications', getNotification);
 router.post('/notifications', sendBeRealNotification);
 
 export default router;
