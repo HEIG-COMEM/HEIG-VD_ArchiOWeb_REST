@@ -15,3 +15,8 @@ export const sendBeRealNotification = asyncHandler(async (req, res) => {
 
     res.status(201).json(notif);
 });
+
+export const getNotification = asyncHandler(async (req, res) => {
+    const notifications = await Notification.find();
+    res.status(200).json(notifications);
+});
