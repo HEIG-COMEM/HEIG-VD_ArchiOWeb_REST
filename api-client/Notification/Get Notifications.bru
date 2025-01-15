@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{base_url}}/{{api_version}}/admin/notifications
+  url: {{base_url}}/{{api_version}}/notifications?onlylast=false
   body: none
   auth: bearer
+}
+
+params:query {
+  onlylast: false
 }
 
 auth:bearer {
