@@ -78,13 +78,12 @@ describe('GET /friends', () => {
     });
 
     test('test that the user can see only pending friendships', async () => {
-        // TODO: Fix this test
         const response = await supertest(app)
             .get(`${href}?status=pending`)
             .set('Authorization', `Bearer ${userJwt}`);
 
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(friendships.length - friends.length);
+        expect(response.body).toHaveLength(pendingUsers.length);
     });
 });
 
