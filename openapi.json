@@ -1035,6 +1035,11 @@
                         "description": "Get only the last notification"
                     }
                 ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Notifications retrieved",
@@ -1058,12 +1063,12 @@
                 }
             },
             "post": {
-                "summary": "Send a notification to all users",
+                "summary": "Send a notification by one admin to all users",
                 "tags": ["Notifications"],
                 "description": "",
                 "responses": {
                     "200": {
-                        "description": "Notification sent",
+                        "description": "Notification sent only by the administrator",
                         "content": {
                             "application/json": {
                                 "schema": {
