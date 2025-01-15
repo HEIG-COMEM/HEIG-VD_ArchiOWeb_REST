@@ -4,12 +4,16 @@ import { asyncHandler } from '../utils/wrapper.js';
 import { notifyUsers } from '../services/websocket/websocketServer.js';
 
 export const getPublications = asyncHandler(async (req, res, next) => {
+    if (req.respondWith && req.respondWith === 'feed')
+        return getPublicationsFeed(req, res, next);
+
+    const onlyLast =
+        (req.query.onlyLast && req.query.onlyLast === 'true') || false;
+    if (onlyLast) return getLastPublication(req, res, next);
+
     const pageSize = parseInt(req.query.pageSize) || 10;
     const page = parseInt(req.query.page) || 1;
     const userId = req.query.userId || null;
-
-    if (req.respondWith && req.respondWith === 'feed')
-        return getPublicationsFeed(req, res, next);
 
     const [publications, count] = await Promise.all([
         Publication.find({
@@ -33,7 +37,23 @@ export const getPublications = asyncHandler(async (req, res, next) => {
     res.json(publications);
 });
 
-const getPublicationsFeed = asyncHandler(async (req, res, next) => {
+const getLastPublication = asyncHandler(async (req, res) => {
+    const userId = req.query.userId || req.currentUserId;
+
+    const publication = await Publication.find({
+        user: userId,
+    })
+        .sort({ createdAt: -1 })
+        .limit(1)
+        .populate('user', 'name profilePicture.url')
+        .exec();
+
+    if (!publication) return res.status(404).end();
+
+    res.json(publication);
+});
+
+const getPublicationsFeed = asyncHandler(async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const page = parseInt(req.query.page) || 1;
 

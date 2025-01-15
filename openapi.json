@@ -477,6 +477,16 @@
                             "example": "672236fc79c78a9de1e25c59",
                             "description": "Unique identifier of the user"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "onlyLast",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        },
+                        "description": "Get only your last publication OR if the userId is set, get the last publication of the user"
                     }
                 ],
                 "security": [
@@ -1026,7 +1036,7 @@
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "onlylast",
+                        "name": "onlyLast",
                         "required": false,
                         "schema": {
                             "type": "boolean",

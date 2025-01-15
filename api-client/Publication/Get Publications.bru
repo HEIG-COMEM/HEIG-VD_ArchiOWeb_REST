@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{base_url}}/{{api_version}}/publications/?page=1&pageSize=10&userId=6761d518be50560cff1c336b
+  url: {{base_url}}/{{api_version}}/publications/?page=1&pageSize=10
   body: none
   auth: bearer
 }
@@ -13,7 +13,8 @@ get {
 params:query {
   page: 1
   pageSize: 10
-  userId: 6761d518be50560cff1c336b
+  ~onlyLast: true
+  ~userId: 6787d9740d051479bf7d1c99
 }
 
 auth:bearer {

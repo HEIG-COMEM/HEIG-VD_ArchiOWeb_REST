@@ -9,6 +9,8 @@ export const feed = async (req, res, next) => {
     if (user.role === 'admin') return next();
 
     const requestedUserId = req.query.userId || null;
+    const onlyLast =
+        (req.query.onlyLast && req.query.onlyLast === 'true') || false;
 
     // If the requested user is not the current user, check if they are friends
     if (requestedUserId) {
@@ -25,6 +27,10 @@ export const feed = async (req, res, next) => {
         return next();
     }
 
+    // If the requested user is the current user, and only the last publication is requested, allow the request
+    if (onlyLast) return next();
+
+    // Otherwise, set the response to be the feed
     req.respondWith = 'feed';
     next();
 };
