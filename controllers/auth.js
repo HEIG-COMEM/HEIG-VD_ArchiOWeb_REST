@@ -33,12 +33,15 @@ export const signup = asyncHandler(async (req, res, next) => {
 
 export const login = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.sendStatus(401); // Unauthorized
+    if (!user)
+        return res.status(401).json({ message: 'Invalid email or password' });
 
-    if (!req.body.password) return res.sendStatus(401); // Unauthorized
+    if (!req.body.password)
+        return res.status(401).json({ message: 'Invalid email or password' });
 
     const valid = await user.comparePassword(req.body.password);
-    if (!valid) return res.sendStatus(401); // Unauthorized
+    if (!valid)
+        return res.status(401).json({ message: 'Invalid email or password' });
 
     const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
     const payload = { sub: user._id.toString(), exp: exp, scope: user.role };
@@ -50,7 +53,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
 export const getUser = asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.currentUserId);
-    if (!user) return res.sendStatus(404); // Not Found
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json(user);
 });

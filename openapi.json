@@ -521,6 +521,7 @@
             },
             "post": {
                 "summary": "Allows to create a new publication",
+                "description": "Beware, you're not allowed to post more than one publication per notification time (except for the admin)",
                 "tags": ["Publications"],
                 "requestBody": {
                     "required": true,
@@ -607,6 +608,7 @@
             },
             "delete": {
                 "summary": "Allows to delete a publication",
+                "description": "Only admin can delete a publication not even the user who posted it",
                 "tags": ["Publications"],
                 "parameters": [
                     {
