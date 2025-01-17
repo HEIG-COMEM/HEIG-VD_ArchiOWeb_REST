@@ -1,4 +1,6 @@
 import User from '../models/user.js';
+import Notification from '../models/notification.js';
+import Publication from '../models/publication.js';
 
 export const feed = async (req, res, next) => {
     const user = await User.findById(req.currentUserId);
@@ -32,5 +34,32 @@ export const feed = async (req, res, next) => {
 
     // Otherwise, set the response to be the feed
     req.respondWith = 'feed';
+    next();
+};
+
+export const checkLastPublication = async (req, res, next) => {
+    if (req.currentUserPermissions.includes('admin')) return next(); // Admin bypasses the middleware
+
+    const lastNotification = (
+        await Notification.find().sort({ createdAt: -1 }).limit(1)
+    ).at(0);
+    const lastPublication = (
+        await Publication.find({ user: req.currentUserId })
+            .sort({ createdAt: -1 })
+            .limit(1)
+    ).at(0);
+
+    // If there are no notifications or publications, allow the request
+    if (!lastNotification || !lastPublication) return next();
+
+    // If the user has already published after the last notif he must wait for the next one
+    if (
+        new Date(lastPublication.createdAt) > new Date(lastNotification.sentAt)
+    ) {
+        return res.status(403).json({
+            message: 'You must wait for the next publication to be notified',
+        });
+    }
+
     next();
 };

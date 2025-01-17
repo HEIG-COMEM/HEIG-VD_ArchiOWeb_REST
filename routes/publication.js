@@ -10,7 +10,7 @@ import {
     deletePublication,
 } from '../controllers/publication.js';
 import * as cdn from '../middlewares/cdn.js';
-import { feed } from '../middlewares/feed.js';
+import { feed, checkLastPublication } from '../middlewares/feed.js';
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ router.get('/', feed, getPublications);
 router.get('/:id', findPublicationById, getPublication);
 router.post(
     '/',
+    checkLastPublication,
     loadPublicationImages,
     cdn.uploadPublicationImages,
     createPublication
