@@ -1,5 +1,6 @@
 import Publication from '../models/publication.js';
 import Friend from '../models/friend.js';
+import Notification from '../models/notification.js';
 import { asyncHandler } from '../utils/wrapper.js';
 import { notifyUsers } from '../services/websocket/websocketServer.js';
 
@@ -80,15 +81,25 @@ const getPublicationsFeed = asyncHandler(async (req, res) => {
         (friend) => friend !== null
     );
 
+    const lastNotification = (
+        await Notification.find().sort({ createdAt: -1 }).limit(1)
+    ).at(0);
+
     const [publications, count] = await Promise.all([
         Publication.find({
             user: { $in: sanitizedFriendsId },
+            ...(lastNotification && {
+                createdAt: { $gt: lastNotification.sentAt },
+            }),
         })
             .limit(pageSize)
             .skip(pageSize * (page - 1))
             .populate('user', 'name profilePicture.url'),
         Publication.countDocuments({
             user: { $in: friendsId },
+            ...(lastNotification && {
+                createdAt: { $gt: lastNotification.sentAt },
+            }),
         }),
     ]);
 
