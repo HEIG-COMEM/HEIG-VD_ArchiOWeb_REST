@@ -8,10 +8,6 @@ import {
 import app from '../app.js';
 import { cleanUpDatabase, disconnectDatabase } from './utils/utils.js';
 import path from 'path';
-import { response } from 'express';
-import exp from 'constants';
-
-// beforeEach(cleanUpDatabase);
 
 const href = `/api/v1/publications`;
 
