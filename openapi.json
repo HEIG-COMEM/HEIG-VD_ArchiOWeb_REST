@@ -236,6 +236,32 @@
                 "responses": {
                     "200": {
                         "description": "Users retrieved",
+                        "headers": {
+                            "Pagination-Page": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Current page number"
+                            },
+                            "Pagination-Pages-Size": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Number of elements per page"
+                            },
+                            "Pagination-Total": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of elements"
+                            },
+                            "Pagination-Total-Count": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of pages"
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -652,6 +678,32 @@
                 "responses": {
                     "200": {
                         "description": "Publications retrieved",
+                        "headers": {
+                            "Pagination-Page": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Current page number"
+                            },
+                            "Pagination-Pages-Size": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Number of elements per page"
+                            },
+                            "Pagination-Total": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of elements"
+                            },
+                            "Pagination-Total-Count": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of pages"
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1217,6 +1269,32 @@
                 "responses": {
                     "200": {
                         "description": "Friends list retrieved",
+                        "headers": {
+                            "Pagination-Page": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Current page number"
+                            },
+                            "Pagination-Pages-Size": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Number of elements per page"
+                            },
+                            "Pagination-Total": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of elements"
+                            },
+                            "Pagination-Total-Count": {
+                                "schema": {
+                                    "type": "integer"
+                                },
+                                "description": "Total number of pages"
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
