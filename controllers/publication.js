@@ -40,13 +40,15 @@ export const getPublications = asyncHandler(async (req, res, next) => {
 const getLastPublication = asyncHandler(async (req, res) => {
     const userId = req.query.userId || req.currentUserId;
 
-    const publication = await Publication.find({
-        user: userId,
-    })
-        .sort({ createdAt: -1 })
-        .limit(1)
-        .populate('user', 'name profilePicture.url')
-        .exec();
+    const publication = (
+        await Publication.find({
+            user: userId,
+        })
+            .sort({ createdAt: -1 })
+            .limit(1)
+            .populate('user', 'name profilePicture.url')
+            .exec()
+    ).at(0);
 
     if (!publication) return res.status(404).end();
 
