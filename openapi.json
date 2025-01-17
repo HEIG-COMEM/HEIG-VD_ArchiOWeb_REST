@@ -3,7 +3,7 @@
     "info": {
         "title": "REST API",
         "version": "1.0.0",
-        "description": "**A demonstration REST API developed with [Express](https://expressjs.com).**"
+        "description": "This project is a REST API built with Express.js, providing endpoints for user authentication, publication management, comment management, friend management, and admin functionalities. It is a simplified version of BeReal, a social media platform for sharing real-life experiences."
     },
     "servers": [
         {
@@ -2091,7 +2091,8 @@
                 "type": "object",
                 "properties": {
                     "message": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Message about the error"
                     }
                 }
             },
