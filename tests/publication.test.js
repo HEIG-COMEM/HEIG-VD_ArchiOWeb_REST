@@ -12,8 +12,8 @@ import path from 'path';
 const href = `/api/v1/publications`;
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const frontImagePath = path.resolve(__dirname, 'utils/img/', 'test-front.jpeg');
-const backImagePath = path.resolve(__dirname, 'utils/img/', 'test-back.jpg');
+const frontImagePath = path.join(__dirname, 'utils', 'img', 'test-front.jpeg');
+const backImagePath = path.join(__dirname, 'utils', 'img', 'test-back.jpg');
 
 let user;
 let friend;
