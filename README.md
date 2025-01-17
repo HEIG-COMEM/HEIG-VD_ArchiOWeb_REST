@@ -3,6 +3,8 @@
 This project is a REST API built with Express.js, providing endpoints for user authentication, publication management, comment management, friend management, and admin functionalities.
 It is a simplified version of BeReal, a social media platform for sharing real-life experiences.
 
+Front-end is available at [HEIG-VD_DevMobil_REST](https://github.com/HEIG-COMEM/HEIG-VD_DevMobil_REST)
+
 ## Table of Contents
 
 -   [Installation](#installation)
